@@ -1,0 +1,53 @@
+.modal-error{
+    width: 770px;
+    height: 510px;
+    background: var(--body);
+    border-radius: 64px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 64px 0 64px 0;
+    overflow: hidden;
+}
+
+.modal-content-error{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 102px;
+    padding: 88px 80px;
+    position: relative;
+    z-index: 1000;
+}
+
+.modal-info{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+#error-title{
+    font-size: 64px;
+    line-height: 76.8px;
+    text-align: left;
+}
+
+#error-subtitle{
+    font-size: 18px;
+    color: var(--btn-hover);
+}
+
+#error-btn{
+    width: 144px;
+}
+
+.error-img{
+    position: absolute;
+    top: 143px;
+    right: 0;
+    width: 50%;
+    height: 70%;
+    z-index: 2;
+}

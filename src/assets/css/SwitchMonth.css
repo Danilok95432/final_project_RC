@@ -1,0 +1,22 @@
+.switch{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.month{
+    font-size: 26px;
+    line-height: 31.2px;
+    letter-spacing: -2%;
+    text-align: center;
+}
+
+.year{
+    font-size: 26px;
+    line-height: 31.2px;
+    letter-spacing: -2%;
+    text-align: center;
+}
+

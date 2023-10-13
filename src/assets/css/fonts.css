@@ -1,0 +1,14 @@
+@font-face {
+    font-family: RedCollarTTF;
+    src: url(../fonts/Redcollar.ttf);
+}
+
+@font-face {
+    font-family: RedCollarOTF;
+    src: url(../fonts/Redcollar.otf);
+}
+
+@font-face {
+    font-family: TT;
+    src: url(../fonts/TT\ Commons\ Medium.otf);
+}

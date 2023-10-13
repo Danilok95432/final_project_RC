@@ -1,0 +1,41 @@
+.modal-alert{
+    width: 710px;
+    height: 340px;
+    background: var(--body);
+    border-radius: 64px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.modal-content-alert{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 64px;
+    padding: 80px 95px;
+}
+
+.btns-alert{
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+#btn-alert:first-child{
+    background: var(--body);
+    color: var(--btn-passive);
+    border: 1px solid var(--btn-passive);
+    transition: all 0.3s ease-in-out;
+}
+
+#btn-alert:first-child:hover{
+    background: var(--btn-hover);
+    color: var(--body);
+    border: none;
+}
+

@@ -1,0 +1,34 @@
+.modal-auth{
+    width: 600px;
+    height: 510px;
+    background: var(--body);
+    border-radius: 64px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} 
+
+.modal-content-auth{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 64px 0 64px 0;
+}
+
+#enter-email{
+    width: 60%;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+#enter-password{
+    width: 60%;
+    margin-bottom: 8px;
+    position: relative;
+}
+

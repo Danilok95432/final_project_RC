@@ -1,0 +1,92 @@
+.modal-create{
+    width: 60%;
+    height: 80%;
+    background: var(--body);
+    border-radius: 64px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content-create{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 64px 0 64px 0;
+}
+
+#create-btn{
+    width: 144px;
+}
+
+.event-input{
+    border: 1px solid var(--cell-disable);
+}
+
+.info-event{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 22px;
+}
+
+.what-event{
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.where-event{
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.info-date{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+#description{
+    height: 153px;
+}
+
+.event-organizer-info{
+    display: flex;
+    flex-direction: row;
+    gap: 2.5px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.organizer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.organizer-name{
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 18px;
+}
+
+.organizer-status{
+    background: #EFDAFC;
+    border-radius: 8px;
+    padding: 2px 4px 1px 4px;
+    font-size: 18px;
+}
+
+.avatar-event{
+    width: 60px;
+    height: 60px;
+}

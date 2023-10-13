@@ -1,0 +1,19 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: RedCollarTTF;
+}
+
+:root {
+  --body: white;
+  --btn-passive: #0D0C0C;
+  --btn-hover: #F51B1B;
+  --btn-disable: #EFEFEF;
+  --cell-disable: #B3B3BC;
+  --disclaimer: #FAFAFA;
+  --valid: #23AE00;
+}

@@ -2,8 +2,6 @@ import { useRef, useState, useEffect } from 'react'
 import axios from 'axios'
 import '../../assets/css/css-for-modal/Authorization.css'
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjk3MTA4MTcyLCJleHAiOjE2OTk3MDAxNzJ9.7CxmhJ1I9WJ3Y-vzjYm3QJwrSeinO5Zklb0sPcoF_O0'
-
 const Authorization = (props) => {
 
     const [valid, setValid] = useState(false)
@@ -11,11 +9,7 @@ const Authorization = (props) => {
 
     useEffect(() => { 
         axios
-            .get('http://localhost:1337/api/users', {
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            })
+            .get('http://localhost:1337/api/users')
             .then(response => {
                 // Handle success.
                 console.log('Data: ', response.data);

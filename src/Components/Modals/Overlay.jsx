@@ -87,6 +87,7 @@ const Overlay = (props) => {
                         <CreateEvent  
                         switchEnterMode={props.switchEnterMode}
                         switchEventModalMode={props.switchEventModalMode}
+                        currentEvent={props.currentEvent}
                         user={props.user}
                         token={props.token}
                         />
@@ -99,6 +100,7 @@ const Overlay = (props) => {
                         switchEnterMode={props.switchEnterMode}
                         switchEventModalMode={props.switchEventModalMode}
                         currentEvent={props.currentEvent}
+                        setCurrentEvent={props.setCurrentEvent}
                         user={props.user}
                         token={props.token}
                         />

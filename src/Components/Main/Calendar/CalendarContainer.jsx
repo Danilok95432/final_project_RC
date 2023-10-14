@@ -14,7 +14,7 @@ let mapStateToProps = (state) =>{
 
 let mapDispatchToProps = (dispatch) =>{
     return{
-        getMonthData: () => {
+        getMonthData: () => { 
             dispatch( getMonthDataAC() );
         },
         switchEventModalMode: (modal) => {
@@ -25,7 +25,7 @@ let mapDispatchToProps = (dispatch) =>{
         },
         setCurrentEvent: (event) => {
             dispatch( setEventAC(event) );
-        } 
+        },
     }
 }
 

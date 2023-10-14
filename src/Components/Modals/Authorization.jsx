@@ -5,21 +5,6 @@ import '../../assets/css/css-for-modal/Authorization.css'
 const Authorization = (props) => {
 
     const [valid, setValid] = useState(false)
-    const [usersList, setUsersList] = useState([])
-
-    useEffect(() => { 
-        axios
-            .get('http://localhost:1337/api/users')
-            .then(response => {
-                // Handle success.
-                console.log('Data: ', response.data);
-                setUsersList(response.data)
-            })
-            .catch(error => {
-                // Handle error.
-                console.log('An error occurred:', error.response);
-            });
-    },[])
 
     let inputEmailRef = useRef('')
 
@@ -46,21 +31,32 @@ const Authorization = (props) => {
           );
     };
 
-    const isExist = (user) => {
-        return user.email === props.email
+    const isExist = (email) => {
+        let status = 200
+        console.log(email)
+        axios
+            .get(`https://planner.rdclr.ru/api/taken-emails/${email}`)
+            .then(response => {
+                status = response.status
+            })
+            .catch(error => {
+                status = error.response.status
+            })
+        return status
     }
 
     const handleNextBtn = () => {
         let result = validateEmail(props.email)
         if(result != null)
         {
-            let user = usersList.filter(isExist) 
-            if(user.length != 0){
+            let status = isExist(props.email)
+            if(status == 200)
+            {
                 props.enterEmail('')
                 props.switchModalMode('PASSWORD')
-                props.authUser(user)
+                props.authUser(props.email)
             }
-            else {
+            else{
                 props.enterEmail('')
                 props.switchModalMode('REGISTRATION')
                 props.authUser(props.email)

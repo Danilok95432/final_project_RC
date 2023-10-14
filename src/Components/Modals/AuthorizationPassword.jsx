@@ -23,8 +23,8 @@ const AuthorizationPassword = (props) => {
 
     const validatePassword = () => {
         axios
-            .post('http://localhost:1337/api/auth/local', {
-                identifier: props.user[0].email,
+            .post('https://planner.rdclr.ru/api/auth/local', {
+                identifier: props.user,
                 password: inputPasswordRef.current.value,
             })
             .then(response => { 

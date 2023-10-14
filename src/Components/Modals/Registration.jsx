@@ -65,7 +65,7 @@ const Registration = (props) => {
 
     const addNewUser = (user) => {
         axios
-        .post('http://localhost:1337/api/auth/local/register', user)
+        .post('https://planner.rdclr.ru/api/auth/local/register', user)
         .then(response => { 
           // Handle success.
           console.log('Well done!');
@@ -76,7 +76,6 @@ const Registration = (props) => {
           props.login(true, response.data.jwt)
         })
         .catch(error => {
-          // Handle error.
           console.log('An error occurred:', error.response);
         });
     }

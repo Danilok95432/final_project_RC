@@ -21,7 +21,7 @@
 }
 
 #create-btn{
-    width: 144px;
+    width: 164px;
 }
 
 .event-input{
@@ -89,4 +89,14 @@
 .avatar-event{
     width: 60px;
     height: 60px;
+}
+
+.drop-area{
+    height: 12vh;
+    border: 3px dashed var(--cell-disable);
+    color: var(--cell-disable);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

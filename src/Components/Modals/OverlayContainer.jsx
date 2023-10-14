@@ -3,7 +3,7 @@ import Overlay from "./Overlay";
 import { enterEmailAC, enterNameAC, enterPasswordAC, enterRepeatPasswordAC, loginAC } from "../../redux/authReducer";
 import { switchEnterModeAC, switchModalModeAC } from "../../redux/appReducer";
 import { addUserAC, authUserAC } from "../../redux/usersReducer";
-import { switchEventModalModeAC } from "../../redux/eventsReducer";
+import { setEventAC, switchEventModalModeAC } from "../../redux/eventsReducer";
 
 
 let mapStateToProps = (state) =>{
@@ -54,6 +54,9 @@ let mapDispatchToProps = (dispatch) =>{
         },
         authUser: (user) => {
             dispatch( authUserAC(user) );
+        },
+        setCurrentEvent: (event) => {
+            dispatch( setEventAC(event) );
         }
     }
 }

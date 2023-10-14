@@ -7,6 +7,7 @@ const CreateEvent = (props) => {
 
     const [active, setActive] = useState(false)
     const [user, setUser] = useState(null)
+    const [drag, setDrag] = useState(false)
 
     const inputNameRef = useRef('')
     const inputDescriptionRef = useRef('')
@@ -17,7 +18,7 @@ const CreateEvent = (props) => {
     const inputPlaceRef = useRef('')
 
     const refsArr = [inputNameRef, inputDescriptionRef, inputParticipantsRef, inputStartDateRef, inputEndDateRef, inputTimeRef, inputPlaceRef]
-    const refsRequeried = [inputNameRef, inputDescriptionRef, inputStartDateRef, inputTimeRef, inputPlaceRef]
+    const refsRequeried = [inputNameRef, inputDescriptionRef, inputStartDateRef, inputPlaceRef]
 
     const checkNonEmptyFields = (refs) => {
         let flag = true
@@ -37,7 +38,7 @@ const CreateEvent = (props) => {
 
     const switchMode = () => {
         let flag = checkNonEmptyFields(refsArr)
-        if(!flag){
+        if(flag){
             props.switchEventModalMode('ALL')
             props.switchEnterMode(false) 
         }
@@ -48,36 +49,68 @@ const CreateEvent = (props) => {
         }
     }
 
+    const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+          if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+              return;
+            }
+            seen.add(value);
+          }
+          return value;
+        };
+      };
+
     const handleCreateEvent = () => {
+
         let event = {
-            title: inputNameRef,
-            description: inputDescriptionRef,
-            dateStart: inputStartDateRef,
-            location: inputPlaceRef,
-            participants: [1],
+            title: inputNameRef.current.value,
+            description: inputDescriptionRef.current.value,
+            dateStart: inputStartDateRef.current.value,
+            location: inputPlaceRef.current.value,
+            participant: props.user,
         }
         
         axios
-            .post('http://localhost:1337/api/events', event, {headers: {
-                Authorization: `Bearer ${props.token}`,
+            .post('https://planner.rdclr.ru/api/events', JSON.stringify(event,getCircularReplacer()), { headers: {
+                "Authorization": `Bearer ${props.token}`,
+                "Content-Type": "application/json"
                 }})
-            .then(response => {  
-                // Handle success.
-                console.log('Well done!');
-                console.log(response.data)
+            .then(response => { 
+                props.switchEnterMode(false) 
+                props.switchEventModalMode('CONGRATULATION')
+                props.switchEnterMode(true) 
             })
             .catch(error => {
                 // Handle error.
-                console.log('An error occurred:', error.response);
+                console.log('An error occurred:', error);
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('ERROR')
                 props.switchEnterMode(true) 
-            });     
+            });   
+    }
+
+    const dragStartHandler = (e) => {
+        e.preventDefault()
+        setDrag(true)
+    }
+
+    const dragLeaveHandler = (e) => {
+        e.preventDefault()
+        setDrag(false)
+    }
+
+    const dropHandler = (e) => {
+        e.preventDefault()
+        let files = [...e.dataTransfer.files]
+        console.log(files)
+        setDrag(false)
     }
 
     useEffect(() => {
         axios
-            .get('http://localhost:1337/api/users/me', {headers: {
+            .get('https://planner.rdclr.ru/api/users/me', {headers: {
                 Authorization: `Bearer ${props.token}`,
                 }})
             .then(response => {  
@@ -108,7 +141,12 @@ const CreateEvent = (props) => {
                         <input id='description' ref={inputDescriptionRef} className='modal-input event-input' onChange={handleChange} type='text' placeholder='Описание*'/>
                         <input id='participants' ref={inputParticipantsRef} className='modal-input event-input' onChange={handleChange} type='select' placeholder='Участники'/>
                         <div className="drop-img-area">
-                            <input type="file" />
+                                <div className="drop-area" 
+                                    onDragStart={e => dragStartHandler(e)}
+                                    onDragLeave={e => dragLeaveHandler(e)}
+                                    onDragOver={e => dragStartHandler(e)}
+                                    onDrop={e => dropHandler(e)}
+                                >{drag ? 'Отпустите файлы, чтобы загрузить их' : 'Выберите фото или перетащите сюда'}</div>
                         </div>
                     </div>
                     <div className="where-event">

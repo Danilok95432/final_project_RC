@@ -65,19 +65,19 @@ const Registration = (props) => {
 
     const addNewUser = (user) => {
         axios
-        .post('https://planner.rdclr.ru/api/auth/local/register', user)
-        .then(response => { 
-          // Handle success.
-          console.log('Well done!');
-          console.log('User profile', response.data.user);
-          console.log('User token', response.data.jwt);
-          props.addUser({user: response.data.user, token: response.data.jwt})
-          props.authUser(response.data.user)
-          props.login(true, response.data.jwt)
-        })
-        .catch(error => {
-          console.log('An error occurred:', error.response);
-        });
+            .post('https://planner.rdclr.ru/api/auth/local/register', user)
+            .then(response => { 
+            // Handle success.
+            console.log('Well done!');
+            console.log('User profile', response.data.user);
+            console.log('User token', response.data.jwt);
+            props.addUser({user: response.data.user, token: response.data.jwt})
+            props.authUser(response.data.user)
+            props.login(true, response.data.jwt)
+            })
+            .catch(error => {
+            console.log('An error occurred:', error.response);
+            });
     }
 
     return(
@@ -92,25 +92,28 @@ const Registration = (props) => {
                 <div id='enter-password-reg'>
                         <div className="password-reg">
                             <div className="name-input">
-                                <input id='name' className="modal-input-reg" ref={inputNameRef} type='text' placeholder='Ваше имя' onChange={handleChangeName} value={props.name}/>
+                                <input id='name' className="modal-input-reg" ref={inputNameRef} type='text' onChange={handleChangeName} value={props.name}/>
+                                <label htmlFor="name" className={inputNameRef.current.value ? 'placeholder placeholder-top' : 'placeholder'}>Ваше имя</label>
                             </div>
                             <div className="password-input">
-                                <input id='password' className={border} ref={inputPasswordRef} type={typePassword ? 'text' : 'password'} placeholder='Пароль' onChange={handleChangePassword} value={props.password}/>
+                                <input id='password' className={border} ref={inputPasswordRef} type={typePassword ? 'text' : 'password'} onChange={handleChangePassword} value={props.password}/>
                                 {
                                     props.password != '' ?
                                     <button id={typePassword ? 'close-password' : 'open-password'} onClick={() => setTypePassword(!typePassword)}></button>
                                     :
                                     null
                                 }
+                                <label htmlFor="password" className={inputPasswordRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Пароль</label>
                             </div>
                             <div className="password-repeat-input">
-                                <input id='password-repeat' className={border} ref={inputRepeatPasswordRef} type={typePassword ? 'text' : 'password'} placeholder='Повторите пароль' onChange={handleChangeRepeatPassword} value={props.repeatPassword}/>
+                                <input id='password-repeat' className={border} ref={inputRepeatPasswordRef} type={typePassword ? 'text' : 'password'} onChange={handleChangeRepeatPassword} value={props.repeatPassword}/>
                                 {
                                     props.repeatPassword != '' ?
                                     <button id={typePassword ? 'close-password' : 'open-password'} onClick={() => setTypePassword(!typePassword)}></button>
                                     :
                                     null
                                 }
+                                <label htmlFor="password-repeat-input" className={inputRepeatPasswordRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Повторите пароль</label>
                                 {
                                     valid != null && !valid ?
                                     <label htmlFor="password-repeat">{error}</label>

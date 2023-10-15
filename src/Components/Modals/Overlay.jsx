@@ -8,6 +8,7 @@ import ErrorEvent from './ErrorEvent'
 import CongratulationEvent from './CongratulationEvent';
 import AlertEvent from './AlertEvent';
 import CheckEvent from './CheckEvent'
+import CreateEventContainer from './CreateEventContainer';
 
 const Overlay = (props) => {
 
@@ -84,13 +85,7 @@ const Overlay = (props) => {
                     }
                     {
                         props.eventModalsMode.Create ?
-                        <CreateEvent  
-                        switchEnterMode={props.switchEnterMode}
-                        switchEventModalMode={props.switchEventModalMode}
-                        currentEvent={props.currentEvent}
-                        user={props.user}
-                        token={props.token}
-                        />
+                        <CreateEventContainer />
                         :
                         null
                     }

@@ -53,6 +53,10 @@
     font-family: TT;
 }
 
+.name-input{
+    position: relative;
+}
+
 .password-input{
     position: relative;
 }

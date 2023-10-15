@@ -14,7 +14,7 @@ const Authorization = (props) => {
     }
 
     const handleClear = () => {
-        props.enterEmail('')
+        props.enterEmail('') 
     }
 
     const switchMode = () => {
@@ -31,18 +31,8 @@ const Authorization = (props) => {
           );
     };
 
-    const isExist = (email) => {
-        let status = 200
-        console.log(email)
-        axios
-            .get(`https://planner.rdclr.ru/api/taken-emails/${email}`)
-            .then(response => {
-                status = response.status
-            })
-            .catch(error => {
-                status = error.response.status
-            })
-        return status
+    const isExist = async(email) => {
+        return await axios.get(`https://planner.rdclr.ru/api/taken-emails/${email}`)
     }
 
     const handleNextBtn = () => {
@@ -50,17 +40,17 @@ const Authorization = (props) => {
         if(result != null)
         {
             let status = isExist(props.email)
-            if(status == 200)
-            {
-                props.enterEmail('')
-                props.switchModalMode('PASSWORD')
-                props.authUser(props.email)
-            }
-            else{
-                props.enterEmail('')
-                props.switchModalMode('REGISTRATION')
-                props.authUser(props.email)
-            }
+            status.then(
+                res => {
+                    props.enterEmail('')
+                    props.switchModalMode('PASSWORD')
+                    props.authUser(props.email)
+                },
+                rej => {
+                    props.enterEmail('')
+                    props.switchModalMode('REGISTRATION')
+                    props.authUser(props.email)
+                })
         }
         setValid(validateEmail(props.email))
     }
@@ -72,13 +62,14 @@ const Authorization = (props) => {
                 <h2 className='title-modal'>Вход</h2>
                 <div id='enter-email'>
                     <div className="email">
-                        <input id='email' className={valid != null ? 'modal-input' : 'modal-input invalid'} ref={inputEmailRef} type="text" placeholder='Email' onChange={handleChangeEmail} value={props.email}/>
+                        <input id='email' className={valid != null ? 'modal-input' : 'modal-input invalid'} ref={inputEmailRef} type="text" onChange={handleChangeEmail} value={props.email}/>
                         {
                             props.email != '' ?
                             <button id='close-input' onClick={handleClear}></button>
                             :
                             null
                         }
+                        <label htmlFor="email" className={props.email != '' ? 'placeholder placeholder-top' : 'placeholder'}>Email</label>
                         <label htmlFor="email">
                             {
                                 valid == null ?

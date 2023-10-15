@@ -7,7 +7,10 @@ const CreateEvent = (props) => {
 
     const [active, setActive] = useState(false)
     const [user, setUser] = useState(null)
+    const [users, setUsers] = useState([])
+    const [filtredUsers, setFiltredUsers] = useState([])
     const [drag, setDrag] = useState(false)
+    const [select, setSelect] = useState(false)
 
     const inputNameRef = useRef('')
     const inputDescriptionRef = useRef('')
@@ -30,7 +33,8 @@ const CreateEvent = (props) => {
         return flag
     }
 
-    const handleChange = () => {
+    const handleChange = (field, data) => {
+        props.changeForm(field, data)
         if(checkNonEmptyFields(refsRequeried))
             setActive(true)
         else setActive(false)
@@ -39,10 +43,12 @@ const CreateEvent = (props) => {
     const switchMode = () => {
         let flag = checkNonEmptyFields(refsArr)
         if(flag){
+            props.clearParticipants()
             props.switchEventModalMode('ALL')
             props.switchEnterMode(false) 
         }
         else {
+            props.clearParticipants()
             props.switchEnterMode(false) 
             props.switchEventModalMode('ALERT')
             props.switchEnterMode(true) 
@@ -63,14 +69,20 @@ const CreateEvent = (props) => {
       };
 
     const handleCreateEvent = () => {
-
+        let participantsList = props.participants
+        let orgExist = props.participants.filter((element) => element == user)
+        if(orgExist.length == 0){
+            participantsList.push(props.user)
+        }
         let event = {
             title: inputNameRef.current.value,
             description: inputDescriptionRef.current.value,
             dateStart: inputStartDateRef.current.value,
             location: inputPlaceRef.current.value,
-            participant: props.user,
+            participants: participantsList,
         }
+
+        console.log(event)
         
         axios
             .post('https://planner.rdclr.ru/api/events', JSON.stringify(event,getCircularReplacer()), { headers: {
@@ -78,17 +90,47 @@ const CreateEvent = (props) => {
                 "Content-Type": "application/json"
                 }})
             .then(response => { 
+                console.log(response.data)
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('CONGRATULATION')
                 props.switchEnterMode(true) 
             })
             .catch(error => {
-                // Handle error.
-                console.log('An error occurred:', error);
+                console.log(error.response)
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('ERROR')
                 props.switchEnterMode(true) 
             });   
+    }
+
+    const handleParticipantSelect = () => {
+        props.activeSelect(!select)
+        setSelect(!select)
+    }
+
+    const filterUsers = (userData) => {
+        if(userData){
+            let filtred = userData.filter((user) => ~user.username.toLowerCase().indexOf(inputParticipantsRef.current.value.toLowerCase()))
+            if(inputParticipantsRef.current.value != '')
+            {
+                setFiltredUsers(filtred)
+            }
+            else setFiltredUsers(userData)
+        }
+    }
+
+    const handleSelectUser = (selectedUser) => {
+        props.changeForm('PARTICIPANTS-ARR', selectedUser)
+        let newUsersList = filtredUsers.filter((user) => user != selectedUser)
+        setFiltredUsers(newUsersList)
+        props.activeSelect(false); 
+        setSelect(false)
+    }
+
+    const deleteSelectedUser = (item) => {
+        props.deleteParticipant(item)
+        let newListUsers = [...filtredUsers, item]
+        setFiltredUsers(newListUsers)
     }
 
     const dragStartHandler = (e) => {
@@ -104,7 +146,6 @@ const CreateEvent = (props) => {
     const dropHandler = (e) => {
         e.preventDefault()
         let files = [...e.dataTransfer.files]
-        console.log(files)
         setDrag(false)
     }
 
@@ -114,22 +155,31 @@ const CreateEvent = (props) => {
                 Authorization: `Bearer ${props.token}`,
                 }})
             .then(response => {  
-                // Handle success.
-                console.log('Well done!');
-                console.log(response.data)
                 setUser(response.data)
             })
             .catch(error => {
-                // Handle error.
-                console.log('An error occurred:', error.response);
+                props.switchEnterMode(false) 
+                props.switchEventModalMode('ERROR')
+                props.switchEnterMode(true) 
+            }); 
+
+        axios
+            .get('https://planner.rdclr.ru/api/users', {headers: {
+                Authorization: `Bearer ${props.token}`,
+                }})
+            .then(response => {  
+                filterUsers(response.data)
+                setUsers(response.data)
+            })
+            .catch(error => {
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('ERROR')
                 props.switchEnterMode(true) 
             }); 
     }, [])
 
-
     return(
+        <>
         <div className="modal-create">
             <button className="close-btn" onClick={switchMode}></button>
             <div className="modal-content-create">
@@ -137,9 +187,58 @@ const CreateEvent = (props) => {
                 
                 <div className="info-event">
                     <div className="what-event">
-                        <input id='name' ref={inputNameRef} className='modal-input event-input' onChange={handleChange} type='text' placeholder='Название*'/>
-                        <input id='description' ref={inputDescriptionRef} className='modal-input event-input' onChange={handleChange} type='text' placeholder='Описание*'/>
-                        <input id='participants' ref={inputParticipantsRef} className='modal-input event-input' onChange={handleChange} type='select' placeholder='Участники'/>
+                        <div className="name">
+                            <input id='name' ref={inputNameRef} required={true} className='modal-input event-input' onChange={() => handleChange('TITLE', inputNameRef.current.value)} type='text' value={props.title}/>
+                            <label htmlFor="name" className={inputNameRef.current.value != '' ? 'placeholder placeholder-top' : 'placeholder'}>Название*</label>
+                        </div>
+                        <div className="description">
+                            <input id='description' ref={inputDescriptionRef} required={true} className='modal-input event-input' onChange={() => handleChange('DESCRIPTION', inputDescriptionRef.current.value)} type='text' value={props.description}/>
+                            <label htmlFor="description" className={inputDescriptionRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Описание*</label>
+                        </div>
+                        <div className="participants">
+                            <input id='participants' ref={inputParticipantsRef} required={false} className='modal-input event-input' onChange={() => {handleChange('PARTICIPANTS', inputParticipantsRef.current.value); filterUsers(users)}} onClick={handleParticipantSelect} type='select' value={props.participantsFilter}/>
+                            {
+                                select ? 
+                                <div className="window-select">
+                                    <div className="select-area">
+                                        {
+                                            filtredUsers ? 
+                                            filtredUsers.map(user => {
+                                                return(
+                                                    <div key={user.id} className="user-select-item" onClick={() => handleSelectUser(user)}>
+                                                        <img src={avatar} alt="" width='40px' height='40px'/>
+                                                        <span>{user.username}</span>
+                                                    </div>
+                                                )
+                                            })
+                                            :
+                                            null
+                                        }
+                                    </div>
+                                </div>
+                                :
+                                null
+                            }
+                            {
+                                props.participants != [] ?
+                                <div className="selected-participant">
+                                    {
+                                        props.participants.map(item => {
+                                            return(
+                                                <div key={item.id} className="selected-item">
+                                                    <img src={avatar} alt="" width='30px' height='30px'/>
+                                                    <span>{item.username}</span>
+                                                    <button className='close-btn-selected' onClick={() => deleteSelectedUser(item)}></button>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                                :
+                                null
+                            }
+                            <label htmlFor="participants" className={inputParticipantsRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Участники</label>
+                        </div>
                         <div className="drop-img-area">
                                 <div className="drop-area" 
                                     onDragStart={e => dragStartHandler(e)}
@@ -151,11 +250,23 @@ const CreateEvent = (props) => {
                     </div>
                     <div className="where-event">
                         <div className="info-date">
-                            <input id='start-date' ref={inputStartDateRef} className='modal-input event-input' onChange={handleChange} type='date' placeholder='Начало*'/>
-                            <input id='end-date' ref={inputEndDateRef} className='modal-input event-input' onChange={handleChange} type='date' placeholder='Конец'/>
+                            <div className="start-date">
+                                <input id='start-date' ref={inputStartDateRef} required={true} className='modal-input event-input' onChange={() => handleChange('STARTDATE', inputStartDateRef.current.value)} type='date'/>
+                                <label htmlFor="start-date" className={'placeholder placeholder-top'}>Начало*</label>
+                            </div>
+                            <div className="end-date">
+                                <input id='end-date' ref={inputEndDateRef} required={false} className='modal-input event-input' onChange={() => handleChange('ENDDATE', inputEndDateRef.current.value)} type='date'/>
+                                <label htmlFor="end-date" className={'placeholder placeholder-top'}>Конец</label>
+                            </div>
                         </div>
-                        <input id='time' ref={inputTimeRef} className='modal-input event-input' onChange={handleChange} type='time' placeholder='Время*'/>
-                        <input id='place-event' ref={inputPlaceRef} className='modal-input event-input' onChange={handleChange} type='text' placeholder='Место проведения*'/>
+                        <div className="time">
+                            <input id='time' ref={inputTimeRef} required={false} className='modal-input event-input' onChange={() => handleChange('TIME', inputTimeRef.current.value)} type='time'/>
+                            <label htmlFor="time" className={'placeholder placeholder-top'}>Время</label>
+                        </div>
+                        <div className="place-event">
+                            <input id='place-event' ref={inputPlaceRef} required={true} className='modal-input event-input' onChange={() => handleChange('PLACE', inputPlaceRef.current.value)} type='text' value={props.place}/>
+                            <label htmlFor="place-event" className={inputPlaceRef.current.value ? 'placeholder placeholder-top' : 'placeholder'}>Место проведения*</label>
+                        </div>
                         <div className="event-organizer-info">
                             <img className='avatar-event' src={avatar} alt="" />
                             <div className="organizer">
@@ -170,6 +281,7 @@ const CreateEvent = (props) => {
                 </button>
             </div>
         </div>
+        </>
     )
 }
 

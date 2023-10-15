@@ -7,7 +7,7 @@ const AuthorizationPassword = (props) => {
     const [valid, setValid] = useState(null)
     const [error, setError] = useState('')
     const [typePassword, setTypePassword] = useState(false)
-
+    
     let inputPasswordRef = useRef('')
 
     const handleChangePassword = () => {
@@ -51,13 +51,14 @@ const AuthorizationPassword = (props) => {
                 <h2 className='title-modal'>Вход</h2>
                 <div id='enter-password'>
                         <div className="password">
-                            <input id='password' className='modal-input' ref={inputPasswordRef} type={typePassword ? 'text' : 'password'} placeholder='password' onChange={handleChangePassword} value={props.password}/>
+                            <input id='password' className='modal-input' ref={inputPasswordRef} type={typePassword ? 'text' : 'password'} onChange={handleChangePassword} value={props.password}/>
                             {
                                 props.password != '' ?
                                 <button id={typePassword ? 'close-password' : 'open-password'} onClick={() => setTypePassword(!typePassword)}></button>
                                 :
                                 null
                             }
+                            <label htmlFor="password" className={props.password !='' ? 'placeholder placeholder-top' : 'placeholder'}>Пароль</label>
                             {
                                     valid != null && !valid ?
                                     <label htmlFor="password">{error}</label>

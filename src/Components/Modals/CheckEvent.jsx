@@ -5,6 +5,8 @@ import '../../assets/css/css-for-modal/CheckEvent.css'
 
 const CheckEvent = (props) => {
 
+    const [step, setStep] = useState(0)
+
     const switchMode = () => {
         props.switchEventModalMode('ALL')
         props.switchEnterMode(false) 
@@ -17,6 +19,7 @@ const CheckEvent = (props) => {
                 Authorization: `Bearer ${props.token}`,
                 }})
             .then(response => {
+                console.log(response.data)
                 props.setCurrentEvent(response.data)
             })
             .catch(error => {
@@ -31,6 +34,7 @@ const CheckEvent = (props) => {
             axios
                 .get(`https://planner.rdclr.ru/api/events/${props.currentEvent}?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z`)
                 .then(response => {
+                    console.log(response.data)
                     props.setCurrentEvent(response.data)
                 })
                 .catch(error => {
@@ -43,11 +47,36 @@ const CheckEvent = (props) => {
         }
     }, [])
 
+    const nextSlide = (diff) => {
+        let item = step + diff
+        setStep(item)
+    }
+
+    const prevSlide = (diff) => {
+        let item = step - diff
+        setStep(item)
+    }
+
+    const createPagination = () => {
+        const dots = []
+        console.log(step, (props.currentEvent.data.photos.length / 4))
+        for (let i = 0; i < (props.currentEvent.data.photos.length - 1) / 2; i++) {
+            dots.push(
+                step == (props.currentEvent.data.photos.length / 4) * i ?
+                <span className="pagination-vector-active" key={`dot-${i}`} number={i}></span>
+                :
+                <span className="pagination-vector" key={`dot-${i}`} number={i}></span>
+            );
+        }
+        return dots;
+    }
+
     return(
-        <div className="modal-create">
+        <div className="modal-check">
             <button className="close-btn" onClick={switchMode}></button>
                 {
                     props.currentEvent.data ?
+                    <>
                     <div className="modal-content-create">
                         <h2 className='title-modal'>{props.currentEvent.data.title}</h2>
                         <div className="view-info-event">
@@ -78,30 +107,43 @@ const CheckEvent = (props) => {
                             </div>
                         </div>
                         <div className="photos-event">
-                            <h3 className='subtitle-modal'>Галерея</h3>
-                            <div className="gallery">
-                            {
-                                /*
+                            <div className="header-gallery">
+                                <h3 className='subtitle-modal'>Галерея</h3>
+                                {
                                     props.currentEvent.data.photos ?
-                                    props.currentEvent.data.photos.map(photo => {
-                                        axios.get(`https://planner.rdclr.ru/api${photo.url}`)
-                                             .then(response => {
-                                                console.log(response)
-                                             })
-                                             .catch(error => {
-                                                console.log(error.response)
-                                             })
-                                        return(
-                                            <img src='#' alt='' width={photo.width} height={photo.height} />
-                                        )
-                                    })
+                                    <div className="btns-navigate">
+                                        <button className={step == 0 ? 'btn-switch prev disable-btn' : 'btn-switch prev'} onClick={() => prevSlide((props.currentEvent.data.photos.length / 4))}></button>
+                                        <button className={step == (props.currentEvent.data.photos.length - (props.currentEvent.data.photos.length / 4) ) ? 'btn-switch next disable-btn' : 'btn-switch next'} onClick={() => nextSlide((props.currentEvent.data.photos.length / 4))}></button>
+                                    </div>
                                     :
                                     null
-                                */
                                 }
                             </div>
+                            {
+                                props.currentEvent.data.photos ?
+                                <>
+                                <div className="gallery" style={{ transform: `translateX(-${step * props.currentEvent.data.photos[0].width}px)` }}>
+                                    {
+                                        props.currentEvent.data.photos.map(photo => {
+                                            return(
+                                                <img key={photo.id} src={photo.formats.small ? `https://planner.rdclr.ru${photo.formats.small.url}` : `https://planner.rdclr.ru${photo.url}`} alt='' width={photo.formats.small ? photo.formats.small.width : photo.width} height={photo.formats.small ? photo.formats.small.height : photo.height} />
+                                            )
+                                        })
+                                    }
+                                </div>
+                                <div className="pagination">
+                                    {
+                                        createPagination()
+                                    }
+                                </div>
+                                </>
+                                :
+                                null
+                            }
                         </div>
                     </div>
+                    
+                    </>
                     :
                     null
                 }

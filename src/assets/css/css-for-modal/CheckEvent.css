@@ -1,3 +1,15 @@
+.modal-check{
+    width: 60%;
+    background: var(--body);
+    border-radius: 64px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
 .view-info-event{
     width: 100%;
     display: flex;
@@ -39,6 +51,22 @@
 
 .photos-event{
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+}
+
+.header-gallery{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btns-navigate{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .subtitle-modal{
@@ -50,6 +78,7 @@
 .participants-list{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 48px;
     align-items: center;
 }
@@ -62,6 +91,37 @@
 }
 
 .gallery{
+    width: 100%;
     display: flex;
     flex-direction: row;
+    gap: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.disable-btn{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.pagination{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    margin: auto;
+}
+
+.pagination-vector{
+    width: 33px;
+    height: 4px;
+    background-position: center;
+    align-items: center;
+    background-image: url("data:image/svg+xml,%3Csvg width='33' height='4' viewBox='0 0 33 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' width='32' height='4' rx='2' fill='%23EFEFEF'/%3E%3C/svg%3E%0A");
+}
+
+.pagination-vector-active{
+    width: 33px;
+    height: 4px;
+    background-position: center;
+    align-items: center;
+    background-image: url("data:image/svg+xml,%3Csvg width='33' height='4' viewBox='0 0 33 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' width='32' height='4' rx='2' fill='%23F51B1B'/%3E%3C/svg%3E%0A");
 }

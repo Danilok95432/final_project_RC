@@ -1,6 +1,5 @@
 .modal-create{
-    width: 60%;
-    height: 80%;
+    width: 50%;
     background: var(--body);
     border-radius: 64px;
     position: relative;
@@ -17,7 +16,7 @@
     justify-content: center;
     align-items: center;
     gap: 40px;
-    padding: 64px 0 64px 0;
+    padding: 80px 0 80px 0;
 }
 
 #create-btn{

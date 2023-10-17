@@ -28,6 +28,12 @@
 
 #congrat-subtitle{
     font-size: 18px;
+    color: var(--btn-passive);
+}
+
+.event-title-congrat{
+    font-size: 18px;
+    font-weight: 400;
     color: var(--btn-hover);
 }
 

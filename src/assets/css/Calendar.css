@@ -45,6 +45,7 @@
     flex-direction: column;
     gap: 8px;
     align-items: flex-end;
+
 }
 
 .day:hover{
@@ -82,14 +83,25 @@
 .event-calendar{
     cursor: pointer;
     padding: 3px 6px;
+    margin-right: 10px;
     background: var(--btn-disable);
     max-width: 70%;
-    height: 28px;
+    max-height: 28px;
     text-overflow: ellipsis;
     text-align: center;
     display: block;
     overflow: hidden;
     white-space: nowrap;
+    border-radius: 8px;
+}
+
+.me-participant{
+    background: var(--btn-hover);
+    color: var(--body);
+}
+
+.passed-event-calendar{
+    opacity: 0.5;
 }
 
 

@@ -1,6 +1,6 @@
 const NEXT_MONTH = 'PREV-MONTH',
       PREV_MONTH = 'NEXT-MONTH',
-      GET_MONTH_DATA = 'GET-MONTH-DATA';
+      GET_MONTH_DATA = 'GET-MONTH-DATA'
 
 const DAYS_IN_WEEK = 7,
       DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -135,6 +135,7 @@ export let getMonthDataAC = () =>{
         type: GET_MONTH_DATA,
     }
 }
+
 
 
 export default calendarReducer

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import CreateEvent from "./CreateEvent";
-import { activeSelectAC, changeFormAC, clearParticipantsAC, deleteParticipantAC } from "../../redux/createEventReducer";
+import { activeSelectAC, changeFormAC, clearParticipantsAC, createdEventAC, deleteParticipantAC } from "../../redux/createEventReducer";
 import { switchEnterModeAC } from "../../redux/appReducer";
 import { switchEventModalModeAC } from "../../redux/eventsReducer";
 
@@ -41,6 +41,9 @@ let mapDispatchToProps = (dispatch) =>{
         },
         deleteParticipant: (user) => {
             dispatch( deleteParticipantAC(user) );
+        },
+        createdEvent: (event) => {
+            dispatch( createdEventAC(event) );
         }
     }
 }

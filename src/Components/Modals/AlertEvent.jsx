@@ -9,6 +9,8 @@ const AlertEvent = (props) => {
     }
 
     const exit = () => {
+        props.clearParticipants()
+        props.changeForm('ALL', '')
         props.switchEventModalMode('ALL')
         props.switchEnterMode(false) 
     }

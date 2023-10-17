@@ -3,12 +3,14 @@ import '../../assets/css/Common.css'
 import Authorization from './Authorization'
 import AuthorizationPassword from './AuthorizationPassword';
 import Registration from './Registration';
-import CreateEvent from './CreateEvent'
 import ErrorEvent from './ErrorEvent'
-import CongratulationEvent from './CongratulationEvent';
-import AlertEvent from './AlertEvent';
-import CheckEvent from './CheckEvent'
 import CreateEventContainer from './CreateEventContainer';
+import CheckEventContainer from './CheckEventContainer';
+import CongratulationEventContainer from './CongratulationEventContainer';
+import AlertEventContainer from './AlertEventContainer';
+import CongratulationJoinEventContainer from './CongratulationJoinEventContainer';
+import AlertLeaveEvent from './AlertLeaveEvent';
+import AlertLeaveEventContainer from './AlertLeaveEventContainer';
 
 const Overlay = (props) => {
 
@@ -91,14 +93,7 @@ const Overlay = (props) => {
                     }
                     {
                         props.eventModalsMode.Check ?
-                        <CheckEvent  
-                        switchEnterMode={props.switchEnterMode}
-                        switchEventModalMode={props.switchEventModalMode}
-                        currentEvent={props.currentEvent}
-                        setCurrentEvent={props.setCurrentEvent}
-                        user={props.user}
-                        token={props.token}
-                        />
+                        <CheckEventContainer />
                         :
                         null
                     }
@@ -112,18 +107,29 @@ const Overlay = (props) => {
                     }
                     {
                         props.eventModalsMode.Congratulation ?
-                        <CongratulationEvent  
-                        switchEnterMode={props.switchEnterMode}
-                        switchEventModalMode={props.switchEventModalMode}/>
+                        <CongratulationEventContainer />
+                        :
+                        null
+                    }
+                    {
+                        props.eventModalsMode.CongratulationJoin ?
+                        <CongratulationJoinEventContainer />
                         :
                         null
                     }
                     {
                         props.eventModalsMode.Alert ?
                         <>
-                            <AlertEvent  
-                            switchEnterMode={props.switchEnterMode}
-                            switchEventModalMode={props.switchEventModalMode}/>
+                            <AlertEventContainer />
+                            <div className="overlay"></div>
+                        </>
+                        :
+                        null
+                    }
+                    {
+                        props.eventModalsMode.AlertLeave ?
+                        <>
+                            <AlertLeaveEventContainer />
                             <div className="overlay"></div>
                         </>
                         :

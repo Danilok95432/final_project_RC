@@ -6,6 +6,7 @@ import '../../assets/css/css-for-modal/CheckEvent.css'
 const CheckEvent = (props) => {
 
     const [step, setStep] = useState(0)
+    const [currentItem, setCurrentItem] = useState(0)
 
     const switchMode = () => {
         props.switchEventModalMode('ALL')
@@ -15,9 +16,12 @@ const CheckEvent = (props) => {
     useEffect(() => {
         if(props.token){
             axios
-            .get(`https://planner.rdclr.ru/api/events/${props.currentEvent}?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z`, {headers: {
-                Authorization: `Bearer ${props.token}`,
-                }})
+            .get(`https://planner.rdclr.ru/api/events/${props.currentEvent}?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${props.token}`,
+                    }
+                })
             .then(response => {
                 console.log(response.data)
                 props.setCurrentEvent(response.data)
@@ -49,26 +53,65 @@ const CheckEvent = (props) => {
 
     const nextSlide = (diff) => {
         let item = step + diff
+        let nextItemPhoto = currentItem + 1
+        setCurrentItem(nextItemPhoto)
         setStep(item)
     }
 
     const prevSlide = (diff) => {
         let item = step - diff
+        let nextItemPhoto = currentItem - 1
+        setCurrentItem(nextItemPhoto)
         setStep(item)
     }
 
     const createPagination = () => {
         const dots = []
-        console.log(step, (props.currentEvent.data.photos.length / 4))
+        console.log(step)
         for (let i = 0; i < (props.currentEvent.data.photos.length - 1) / 2; i++) {
             dots.push(
-                step == (props.currentEvent.data.photos.length / 4) * i ?
+                step == (props.currentEvent.data.photos.length - 1 / 2) * i ?
                 <span className="pagination-vector-active" key={`dot-${i}`} number={i}></span>
                 :
                 <span className="pagination-vector" key={`dot-${i}`} number={i}></span>
             );
         }
         return dots;
+    }
+
+    const handleAuth = () => {
+        props.switchEnterMode(false)
+        props.switchEventModalMode('ALL')
+        props.switchEnterMode(true)
+        props.switchModalMode('EMAIL')
+    }
+
+    const handleParticipation = () => {
+        if(props.currentEvent.data.participants.filter((participant) => participant.email == props.user).length == 0)
+        {
+            console.log(props.token)
+            axios.post(`https://planner.rdclr.ru/api/events/${props.currentEvent.data.id}/join`, {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${props.token}`,
+                        }
+                    })
+                .then(response => {
+                    props.switchEnterMode(false) 
+                    props.switchEventModalMode('CONGRATULATION-JOIN')
+                    props.switchEnterMode(true) 
+                })
+                .catch(error => {
+                    props.switchEnterMode(false) 
+                    props.switchEventModalMode('ERROR')
+                    props.switchEnterMode(true) 
+                })
+        }
+        else{
+            props.switchEnterMode(false) 
+            props.switchEventModalMode('ALERT-LEAVE')
+            props.switchEnterMode(true) 
+        }
     }
 
     return(
@@ -92,12 +135,20 @@ const CheckEvent = (props) => {
                             <h3 className='subtitle-modal'>Участники</h3>
                             <div className="participants-list">
                                 {
-                                    props.currentEvent.data.participants ?
+                                    props.currentEvent.data.participants ? 
                                     props.currentEvent.data.participants.map(participant => {
                                         return(
-                                            <div className="participant">
+                                            <div key={participant.id} className="participant">
                                                 <img src={avatar} alt="" width='40px' height='40px'/>
-                                                <span>{participant.username}</span>
+                                                <div className="participant-info">
+                                                    <span>{participant.username}</span>  
+                                                    {
+                                                        props.currentEvent.data.owner && participant.id == props.currentEvent.data.owner.id ?
+                                                        <span className='organizer-status-check'>Организатор</span> 
+                                                        :
+                                                        null
+                                                    }
+                                                </div>
                                             </div>
                                         )
                                     })
@@ -112,8 +163,8 @@ const CheckEvent = (props) => {
                                 {
                                     props.currentEvent.data.photos ?
                                     <div className="btns-navigate">
-                                        <button className={step == 0 ? 'btn-switch prev disable-btn' : 'btn-switch prev'} onClick={() => prevSlide((props.currentEvent.data.photos.length / 4))}></button>
-                                        <button className={step == (props.currentEvent.data.photos.length - (props.currentEvent.data.photos.length / 4) ) ? 'btn-switch next disable-btn' : 'btn-switch next'} onClick={() => nextSlide((props.currentEvent.data.photos.length / 4))}></button>
+                                        <button className={step == 0 ? 'btn-switch prev disable-btn' : 'btn-switch prev'} onClick={() => prevSlide((props.currentEvent.data.photos.length / 2))}></button>
+                                        <button className={step > props.currentEvent.data.photos.length ? 'btn-switch next disable-btn' : 'btn-switch next'} onClick={() => nextSlide((props.currentEvent.data.photos.length / 2))}></button>
                                     </div>
                                     :
                                     null
@@ -122,7 +173,7 @@ const CheckEvent = (props) => {
                             {
                                 props.currentEvent.data.photos ?
                                 <>
-                                <div className="gallery" style={{ transform: `translateX(-${step * props.currentEvent.data.photos[0].width}px)` }}>
+                                <div className="gallery" style={{ transform: `translateX(-${props.currentEvent.data.photos[currentItem].formats.small ? currentItem * props.currentEvent.data.photos[currentItem].formats.small.width : currentItem * props.currentEvent.data.photos[currentItem].width}px)` }}>
                                     {
                                         props.currentEvent.data.photos.map(photo => {
                                             return(
@@ -138,11 +189,24 @@ const CheckEvent = (props) => {
                                 </div>
                                 </>
                                 :
-                                null
+                                <p className='no-photo-disclaimer'>У мероприятия нет фото</p>
                             }
                         </div>
-                    </div>
-                    
+                        {
+                                props.token ? 
+                                <button className='submit btn-join-event' onClick={handleParticipation}>{
+                                    props.currentEvent.data.participants.filter((participant) => participant.email == props.user).length == 0 ?
+                                    'Присоединиться к событию'
+                                    :
+                                    'Отменить участие в событии'
+                                }</button>
+                                :
+                                <div className='enter-to-join-event'>
+                                    <button className='btn-enter-to-join-event' onClick={handleAuth}>Войдите</button>
+                                    <span className='enter-to-join-event-text'>, чтобы присоединиться к событию</span>
+                                </div>
+                            }
+                    </div>          
                     </>
                     :
                     null

@@ -5,9 +5,26 @@ import axios from 'axios'
 
 const Calendar = (props) => {
 
+    const currentDate = Date.now()
     const [data, setData] = useState([])
     const [eventsData, setEventsData] = useState([])
+    
     let eventsStore = []
+
+    let startDateFilter
+    let endDateFilter
+    if(props.currentMonth - 1 < 10 && props.currentMonth > 0)
+    {
+        startDateFilter = props.currentYear + '-' + '0' + (props.currentMonth - 1) + '-' + '23' + 'T' + '00:00:00.000Z'
+    }
+    else if(props.currentMonth - 1 < 0) startDateFilter = props.currentYear - 1 + '-' + 11 + '-' + '23' + 'T' + '00:00:00.000Z'
+    else startDateFilter = props.currentYear + '-' + (props.currentMonth - 1) + '-' + '23' + 'T' + '00:00:00.000Z'
+    if(props.currentMonth + 1 > 11)
+    {
+        endDateFilter = props.currentYear + 1 + '-' + '0' + 0 + '-' + '07' + 'T' + '00:00:00.000Z'
+    }
+    else if(props.currentMonth + 1 < 10) endDateFilter = props.currentYear + '-' + '0' + (props.currentMonth + 1) + '-' + '07' + 'T' + '00:00:00.000Z'
+    else endDateFilter = props.currentYear + '-' + (props.currentMonth + 1) + '-' + '07' + 'T' + '00:00:00.000Z'
 
     const NAME_OF_DAYS = [
         'Пн',
@@ -21,9 +38,9 @@ const Calendar = (props) => {
 
     useEffect(() => {
         axios
-            .get('https://planner.rdclr.ru/api/events?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z')
+            .get(`https://planner.rdclr.ru/api/events?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z`)
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
                 setEventsData(response.data)
             })
             .catch((error) => {
@@ -34,7 +51,7 @@ const Calendar = (props) => {
             })
             props.getMonthData()
         setData(props.monthData)
-    }, [props.currentMonth])
+    }, [props.currentMonth, props.createdEvent, props.deletedEvent])
 
     const isCurrentMonthDate = (date) => {
         if(date.getMonth() == props.currentMonth)
@@ -53,7 +70,7 @@ const Calendar = (props) => {
         eventsStore = []
         let dateFormat = date.toLocaleDateString('en-GB')
         let flag = false
-        if(eventsData.data)
+        if(eventsData.data){
             eventsData.data.map(event => {
                 let eventFormatted = formatDate(event.dateStart)
                 if(eventFormatted == dateFormat){
@@ -61,10 +78,26 @@ const Calendar = (props) => {
                     eventsStore.push(event)
                 }
             })
+            sortByTime(eventsStore)
+        }
         return flag
     }
 
+    const sortByTime = (store) => {
+        store.sort(function(a, b){
+            return b.dateStart - a.dateStart
+        })
+    }
 
+    const isParticipant = (participants) => {
+        let flag = false
+        if(props.token != null)
+        {
+            if(participants.filter((participant) => participant.email == props.user).length != 0)
+                flag = true
+        }
+        return flag
+    }
 
     const handlerClickEvents = (e) => {
         props.switchEnterMode(true)
@@ -92,11 +125,14 @@ const Calendar = (props) => {
                                             <span className='day-number'>{day.date.getDate()}</span>
                                             {
                                                 hasEvents(day.date) && eventsStore != [] ?
-                                                
                                                     eventsStore.map(event => {
-                                                        return <span key={event.id} id={event.id} className='event-calendar' onClick={handlerClickEvents}>{event.title}</span>
+                                                        return <span key={event.id} id={event.id} className={
+                                                            day.date < currentDate ? 
+                                                            'event-calendar passed-event-calendar' 
+                                                            : 
+                                                            isParticipant(event.participants) == false ? 'event-calendar' : 'event-calendar me-participant'
+                                                        } onClick={handlerClickEvents}>{event.title}</span>
                                                     }) 
-                                                   
                                                 :
                                                 null
                                             }

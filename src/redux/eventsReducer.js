@@ -1,5 +1,6 @@
 const SWITCH_EVENT_MODE = 'SWITCH-EVENT-MODE',
-      SET_EVENT = 'SET-EVENT'
+      SET_EVENT = 'SET-EVENT',
+      DELETE_EVENT = 'DELETE-EVENT'
 
 
 let initialState = {
@@ -7,10 +8,13 @@ let initialState = {
         Create: false,
         Check: false,
         Alert: false,
+        AlertLeave: false,
         Congratulation: false,
+        CongratulationJoin: false,
         Error: false,
     },
-    currentEvent: null
+    currentEvent: null,
+    deletedEvent: null,
 }
 
 
@@ -22,7 +26,9 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = true
                     state.eventModalsMode.Check = false
                     state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
                     state.eventModalsMode.Error = false
                     break
                 }
@@ -31,7 +37,9 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = false
                     state.eventModalsMode.Check = true
                     state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
                     state.eventModalsMode.Error = false
                     break
                 }
@@ -40,7 +48,20 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = true
                     state.eventModalsMode.Check = false
                     state.eventModalsMode.Alert = true
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
+                    state.eventModalsMode.Error = false
+                    break
+                }
+
+                case 'ALERT-LEAVE': {
+                    state.eventModalsMode.Create = false
+                    state.eventModalsMode.Check = true
+                    state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = true
+                    state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
                     state.eventModalsMode.Error = false
                     break
                 }
@@ -49,7 +70,20 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = false
                     state.eventModalsMode.Check = false
                     state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = true
+                    state.eventModalsMode.CongratulationJoin = false
+                    state.eventModalsMode.Error = false
+                    break
+                }
+
+                case 'CONGRATULATION-JOIN': {
+                    state.eventModalsMode.Create = false
+                    state.eventModalsMode.Check = false
+                    state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
+                    state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = true
                     state.eventModalsMode.Error = false
                     break
                 }
@@ -58,7 +92,9 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = false
                     state.eventModalsMode.Check = false
                     state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
                     state.eventModalsMode.Error = true
                     break
                 }
@@ -67,7 +103,9 @@ const eventsReducer = (state = initialState, action) =>{
                     state.eventModalsMode.Create = false
                     state.eventModalsMode.Check = false
                     state.eventModalsMode.Alert = false
+                    state.eventModalsMode.AlertLeave = false
                     state.eventModalsMode.Congratulation = false
+                    state.eventModalsMode.CongratulationJoin = false
                     state.eventModalsMode.Error = false
                     break
                 }
@@ -84,6 +122,13 @@ const eventsReducer = (state = initialState, action) =>{
                 currentEvent: action.event
             }
         }
+
+        case DELETE_EVENT: {
+            return{
+                ...state,
+                deletedEvent: action.event
+            }
+        }
     }
     return state
 }
@@ -98,6 +143,13 @@ export let switchEventModalModeAC = (modal) => {
 export let setEventAC = (event) => {
     return{
         type: SET_EVENT,
+        event: event
+    }
+}
+
+export let deleteEventAC = (event) => {
+    return{
+        type: DELETE_EVENT,
         event: event
     }
 }

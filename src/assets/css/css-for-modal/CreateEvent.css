@@ -218,7 +218,13 @@
     position: relative;
 }
 
+.selected-item:hover .close-btn-selected{
+    display: block;
+}
+
 .close-btn-selected{
+    display: none;
+    transition: all 0.3s ease-in-out;
     width: 20px;
     height: 20px;
     border: none;

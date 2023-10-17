@@ -9,6 +9,10 @@ let mapStateToProps = (state) =>{
         currentMonth: state.calendar.currentMonth,
         currentYear: state.calendar.currentYear, 
         monthData: state.calendar.monthData,
+        createdEvent: state.create.createdEvent,
+        deletedEvent: state.events.deletedEvent,
+        user: state.users.user,
+        token: state.auth.token,
     }
 }
 
@@ -25,7 +29,7 @@ let mapDispatchToProps = (dispatch) =>{
         },
         setCurrentEvent: (event) => {
             dispatch( setEventAC(event) );
-        },
+        }
     }
 }
 

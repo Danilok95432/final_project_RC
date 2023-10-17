@@ -1,5 +1,5 @@
 .modal-check{
-    width: 60%;
+    width: 50%;
     background: var(--body);
     border-radius: 64px;
     position: relative;
@@ -47,6 +47,9 @@
 
 .participants-event{
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 } 
 
 .photos-event{
@@ -54,6 +57,7 @@
     display: flex;
     flex-direction: column;
     gap: 44px;
+    margin-top: 16px;
 }
 
 .header-gallery{
@@ -124,4 +128,58 @@
     background-position: center;
     align-items: center;
     background-image: url("data:image/svg+xml,%3Csvg width='33' height='4' viewBox='0 0 33 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' width='32' height='4' rx='2' fill='%23F51B1B'/%3E%3C/svg%3E%0A");
+}
+
+.no-photo-disclaimer{
+    font-family: RedCollarTTF;
+    font-size: 20px;
+    font-weight: 500;
+    display: block;
+    margin: auto;
+}
+
+.btn-join-event{
+    width: 34%;
+    font-size: 18px;
+    margin-top: 24px;
+}
+
+.enter-to-join-event{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: auto;
+    padding-top: 24px;
+}
+
+.btn-enter-to-join-event{
+    border: none;
+    background: var(--body);
+    font-family: RedCollarTTF;
+    font-size: 18px;
+    line-height: 18px;
+    cursor: pointer;
+}
+
+.btn-enter-to-join-event:hover{
+    color: var(--btn-hover);
+}
+
+.enter-to-join-event-text{
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.participant-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.organizer-status-check{
+    font-family: TT;
+    font-size: 14px;
+    background: #EFDAFC;
+    color: #6C27A3;
+    border-radius: 8px;
+    padding: 2px 4px 1px 4px;
 }

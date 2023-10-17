@@ -5,18 +5,18 @@ import { useState } from 'react'
 const SwitchMonth = (props) => {
 
     const MONTH = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'Jule',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь',
     ] 
 
     const handlePrevBtn = () => {

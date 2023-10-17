@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 
 const CreateEvent = (props) => {
-
     const [active, setActive] = useState(false)
     const [user, setUser] = useState(null)
     const [users, setUsers] = useState([])
     const [filtredUsers, setFiltredUsers] = useState([])
     const [drag, setDrag] = useState(false)
     const [select, setSelect] = useState(false)
+    const [files, setFiles] = useState([])
 
     const inputNameRef = useRef('')
     const inputDescriptionRef = useRef('')
@@ -19,14 +19,26 @@ const CreateEvent = (props) => {
     const inputEndDateRef = useRef('')
     const inputTimeRef = useRef('')
     const inputPlaceRef = useRef('')
+    const inputFileRef = useRef(null);
 
     const refsArr = [inputNameRef, inputDescriptionRef, inputParticipantsRef, inputStartDateRef, inputEndDateRef, inputTimeRef, inputPlaceRef]
-    const refsRequeried = [inputNameRef, inputDescriptionRef, inputStartDateRef, inputPlaceRef]
+    const refsRequeried = [inputNameRef, inputDescriptionRef, inputStartDateRef, inputTimeRef, inputPlaceRef]
 
     const checkNonEmptyFields = (refs) => {
         let flag = true
         refs.forEach(ref => {
-            if(ref.current.value == ''){
+            if(ref.current.value != '' && flag){
+                flag = false
+            }
+        })
+        return flag
+    }
+
+    const checkNonEmptyReqFields = (refs) => {
+        let flag = true
+        refs.forEach(ref => {
+            if(ref.current.value == '' && flag)
+            {
                 flag = false
             }
         })
@@ -35,7 +47,7 @@ const CreateEvent = (props) => {
 
     const handleChange = (field, data) => {
         props.changeForm(field, data)
-        if(checkNonEmptyFields(refsRequeried))
+        if(checkNonEmptyReqFields(refsRequeried))
             setActive(true)
         else setActive(false)
     }
@@ -44,11 +56,11 @@ const CreateEvent = (props) => {
         let flag = checkNonEmptyFields(refsArr)
         if(flag){
             props.clearParticipants()
+            props.changeForm('ALL', '')
             props.switchEventModalMode('ALL')
             props.switchEnterMode(false) 
         }
         else {
-            props.clearParticipants()
             props.switchEnterMode(false) 
             props.switchEventModalMode('ALERT')
             props.switchEnterMode(true) 
@@ -72,14 +84,27 @@ const CreateEvent = (props) => {
         let participantsList = props.participants
         let orgExist = props.participants.filter((element) => element == user)
         if(orgExist.length == 0){
-            participantsList.push(props.user)
+            participantsList.push(user)
         }
+        let participantsId = []
+        participantsList.map(item => {
+            participantsId.push(item.id)
+        })
+        participantsId.reverse()
+
+        let splitStartDateEvent = inputStartDateRef.current.value.split('-')
+        let splitEndDateEvent = inputEndDateRef.current.value.split('-')
+        let splitTimeEvent = inputTimeRef.current.value.split(':')
+        let dateStartEvent = new Date(splitStartDateEvent[0], splitStartDateEvent[1] - 1, splitStartDateEvent[2], splitTimeEvent[0], splitTimeEvent[1], 0, 0)
+        let dateEndEvent = new Date(splitEndDateEvent[0], splitEndDateEvent[1], splitEndDateEvent[2], 0, 0, 0, 0)
+
         let event = {
             title: inputNameRef.current.value,
             description: inputDescriptionRef.current.value,
-            dateStart: inputStartDateRef.current.value,
+            dateStart: dateStartEvent,
+            dateEnd: inputEndDateRef.current.value == '' ? null : dateEndEvent,
             location: inputPlaceRef.current.value,
-            participants: participantsList,
+            participants: participantsId,
         }
 
         console.log(event)
@@ -91,6 +116,7 @@ const CreateEvent = (props) => {
                 }})
             .then(response => { 
                 console.log(response.data)
+                props.createdEvent(response.data)
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('CONGRATULATION')
                 props.switchEnterMode(true) 
@@ -145,9 +171,39 @@ const CreateEvent = (props) => {
 
     const dropHandler = (e) => {
         e.preventDefault()
-        let files = [...e.dataTransfer.files]
+        let file = files
+        file.push(...e.dataTransfer.files)
+        console.log(file, files)
         setDrag(false)
+        setFiles(file)
     }
+
+    const handleFileChange = (e) => {
+        if (!e.target.files) {
+            return;
+        }
+        let file = files
+        file.push(e.target.files[0])
+        console.log(file, files)
+        props.changeForm('PHOTOS', file)
+        setFiles(file);
+    }
+
+    console.log(props)
+
+    const handleInputFile = () => {
+        inputFileRef.current?.click()
+    }
+
+    const makePreview = () => {
+        let fr = new FileReader();
+        return new Promise(resolve => {
+            files.map(file => {
+                fr.readAsDataURL(file);
+                fr.onloadend = () => resolve(fr.result)
+            })
+        });
+      }
 
     useEffect(() => {
         axios
@@ -239,13 +295,19 @@ const CreateEvent = (props) => {
                             }
                             <label htmlFor="participants" className={inputParticipantsRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Участники</label>
                         </div>
-                        <div className="drop-img-area">
+                        <div className="drop-img-area" onClick={handleInputFile}>
                                 <div className="drop-area" 
                                     onDragStart={e => dragStartHandler(e)}
                                     onDragLeave={e => dragLeaveHandler(e)}
                                     onDragOver={e => dragStartHandler(e)}
                                     onDrop={e => dropHandler(e)}
                                 >{drag ? 'Отпустите файлы, чтобы загрузить их' : 'Выберите фото или перетащите сюда'}</div>
+                                <input
+                                type="file"
+                                ref={inputFileRef}
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
                         </div>
                     </div>
                     <div className="where-event">
@@ -274,6 +336,14 @@ const CreateEvent = (props) => {
                                 <span className='organizer-status'>Организатор</span>
                             </div>
                         </div>
+                        {
+                            props.photos ?
+                            <div className="photo-for-upload">
+                                
+                            </div>
+                            :
+                            null
+                        }
                     </div>
                 </div>        
                 <button id='create-btn' className={active ? 'submit' : 'submit disable'} onClick={handleCreateEvent}>

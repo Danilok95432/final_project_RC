@@ -1,7 +1,8 @@
 const CHANGE_FORM = 'CHANGE-FORM',
       ACTIVE_SELECT = 'ACTIVE-SELECT',
       CLEAR_PARTICIPANTS = 'CLEAR-PARTICIPANTS',
-      DELETE_PARTCIPANT = 'DELETE-PARTICIPANT'
+      DELETE_PARTCIPANT = 'DELETE-PARTICIPANT',
+      CREATED_EVENT = 'CREATED-EVENT'
 
 let initialState = {
     title: '',
@@ -14,6 +15,7 @@ let initialState = {
     time: null,
     place: '',
     participantsSelect: false,
+    createdEvent: null,
 }
 
 
@@ -57,6 +59,15 @@ const createEventReducer = (state = initialState, action) =>{
                     state.place = action.data
                     break
                 }
+                case 'ALL': {
+                    state.title = action.data
+                    state.description = action.data
+                    state.participantsFilter = action.data
+                    state.startDate = action.data
+                    state.endDate = action.data
+                    state.time = action.data
+                    state.place = action.data
+                }
             }
 
             return{
@@ -82,6 +93,14 @@ const createEventReducer = (state = initialState, action) =>{
             return{
                 ...state,
                 participants: newParticipants
+            }
+        }
+
+        case CREATED_EVENT: {
+            
+            return{
+                ...state,
+                createdEvent: action.event
             }
         }
     }
@@ -115,6 +134,13 @@ export let deleteParticipantAC = (user) => {
     return{
         type: DELETE_PARTCIPANT,
         user: user
+    }
+}
+
+export let createdEventAC = (event) => {
+    return{
+        type: CREATED_EVENT,
+        event: event
     }
 }
 

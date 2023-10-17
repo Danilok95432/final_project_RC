@@ -8,6 +8,8 @@ const CongratulationEvent = (props) => {
         props.switchEnterMode(false) 
     }
 
+    console.log(props.createdEvent)
+
     return(
         <div className="modal-congrat">
             <button className="close-btn" onClick={switchMode}></button>
@@ -15,6 +17,7 @@ const CongratulationEvent = (props) => {
                 <div className="modal-info">
                     <h2 id='congrat-title' className='title-modal'>Ура!</h2>
                     <h4 id='congrat-subtitle' className='subtitle-modal'>Вы добавили новое событие: </h4>
+                    <h4 className='event-title-congrat'>{props.createdEvent ? props.createdEvent.title : null}</h4>
                     <div className="description-event">
                         
                     </div>

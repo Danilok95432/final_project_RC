@@ -72,7 +72,7 @@ const Registration = (props) => {
             console.log('User profile', response.data.user);
             console.log('User token', response.data.jwt);
             props.addUser({user: response.data.user, token: response.data.jwt})
-            props.authUser(response.data.user)
+            props.authUser(response.data.user.email)
             props.login(true, response.data.jwt)
             })
             .catch(error => {

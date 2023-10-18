@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { switchEnterModeAC, switchModalModeAC } from "../../redux/appReducer";
-import { setEventAC, switchEventModalModeAC } from "../../redux/eventsReducer";
+import { setEventAC, switchEventModalModeAC, updateParticipantMe } from "../../redux/eventsReducer";
 import CheckEvent from "./CheckEvent";
 
 let mapStateToProps = (state) =>{
@@ -24,6 +24,9 @@ let mapDispatchToProps = (dispatch) =>{
         },
         setCurrentEvent: (event) => {
             dispatch( setEventAC(event) );
+        },
+        updateParticipantMe: (event) => {
+            dispatch( updateParticipantMe(event) );
         }
     }
 }

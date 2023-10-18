@@ -8,14 +8,51 @@ const CongratulationJoinEvent = (props) => {
         props.switchEnterMode(false) 
     }
 
-    const test = () => {
-        let date = props.currentEvent.data.dateStart.split('T')
-        let time = date[1].split('.')
-        let timeHourMinute = time[0].split(':')
-        timeHourMinute[0] = '15'
-        timeHourMinute[1] = '30' 
-        let dateTime = date[0] + 'T' + timeHourMinute[0] + ':' + timeHourMinute[1] + ':' + timeHourMinute[2] + '.' + time[1]
-        console.log(date, dateTime)
+    const convertDay = (date) => {
+        let dateOutput
+        const days = [
+            'Воскресенье',
+            'Понедельник',
+            'Вторник',
+            'Среда',
+            'Четверг',
+            'Пятница',
+            'Суббота'
+        ];
+        let dateNew = new Date(date)
+        let day = dateNew.getDay()
+        return dateOutput = days[day]
+    }
+
+    const convertMonth = (date) => {
+        let dateOutput = ''
+
+        const MONTH = [
+            'Января',
+            'Февраля',
+            'Марта',
+            'Апреля',
+            'Мая',
+            'Июня',
+            'Июля',
+            'Августа',
+            'Сентября',
+            'Октября',
+            'Ноября',
+            'Декабря',
+        ] 
+        let dateNew = new Date(date)
+        let dayNumber = dateNew.getDate()
+        let month = dateNew.getMonth()
+        return dateOutput = dayNumber + " " + MONTH[month]
+    }
+
+    const convertTime = (date) => {
+        let dateOutput = ''
+        let time = date.split("T")
+        let timeDepth = time[1].split(":")
+        let hourNMinute = timeDepth[0] + ":" + timeDepth[1]
+        return dateOutput = hourNMinute
     }
 
     return(
@@ -28,23 +65,16 @@ const CongratulationJoinEvent = (props) => {
                     <h4 className='event-title-congrat'>{props.currentEvent.data.title}</h4>
                     <div className="description-event">
                         <div className="when">
-                            <div className="day-of-the-week"></div>
-                            <div className="day-n-month"></div>
-                            {
-                                props.currentEvent.data.time ?
-                                <div className="time-event">
-                                    <span>{props.currentEvent.data.time}</span>
-                                </div>
-                                :
-                                null
-                            }
+                            <div className="day-of-week-event-desc">{convertDay(props.currentEvent.data.dateStart)}</div>
+                            <div className="date-event-desc">{convertMonth(props.currentEvent.data.dateStart)}</div>
+                            <div className="time-event-info-desc">{convertTime(props.currentEvent.data.dateStart)}</div>
                         </div>
                         <div className="where">
                             <p>{props.currentEvent.data.location}</p>
                         </div>
                     </div>
                 </div>
-                <button id='congrat-btn' className='submit' onClick={test}>Отлично</button>
+                <button id='congrat-btn' className='submit' onClick={switchMode}>Отлично</button>
             </div>
             <img className='congrat-img' src={congratJoinImg} alt="" />
         </div>

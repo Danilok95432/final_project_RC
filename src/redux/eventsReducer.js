@@ -1,6 +1,7 @@
 const SWITCH_EVENT_MODE = 'SWITCH-EVENT-MODE',
       SET_EVENT = 'SET-EVENT',
-      DELETE_EVENT = 'DELETE-EVENT'
+      DELETE_EVENT = 'DELETE-EVENT',
+      UPDATE_PARTICIPANT_ME = 'UPDATE_PARTICIPANT_ME'
 
 
 let initialState = {
@@ -15,6 +16,7 @@ let initialState = {
     },
     currentEvent: null,
     deletedEvent: null,
+    update: null
 }
 
 
@@ -129,6 +131,13 @@ const eventsReducer = (state = initialState, action) =>{
                 deletedEvent: action.event
             }
         }
+
+        case UPDATE_PARTICIPANT_ME: {
+            return {
+                ...state,
+                update: action.event
+            }
+        }
     }
     return state
 }
@@ -150,6 +159,13 @@ export let setEventAC = (event) => {
 export let deleteEventAC = (event) => {
     return{
         type: DELETE_EVENT,
+        event: event
+    }
+}
+
+export let updateParticipantMe = (event) => {
+    return{
+        type: UPDATE_PARTICIPANT_ME,
         event: event
     }
 }

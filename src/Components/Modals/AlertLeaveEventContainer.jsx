@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { switchEnterModeAC } from "../../redux/appReducer";
-import { deleteEventAC, switchEventModalModeAC } from "../../redux/eventsReducer";
+import { deleteEventAC, switchEventModalModeAC, updateParticipantMe } from "../../redux/eventsReducer";
 import AlertLeaveEvent from "./AlertLeaveEvent";
 
 let mapStateToProps = (state) =>{
@@ -21,6 +21,9 @@ let mapDispatchToProps = (dispatch) =>{
         },
         deleteEvent: (event) => {
             dispatch( deleteEventAC(event) );
+        },
+        updateParticipantMe: (event) => {
+            dispatch( updateParticipantMe(event) );
         }
     }
 }

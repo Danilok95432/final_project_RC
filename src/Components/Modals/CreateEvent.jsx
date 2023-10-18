@@ -2,15 +2,15 @@ import '../../assets/css/css-for-modal/CreateEvent.css'
 import avatar from '../../assets/avatar.png'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+import DropzoneComponent from '../Main/Common/DropzoneComponent'
 
 const CreateEvent = (props) => {
     const [active, setActive] = useState(false)
     const [user, setUser] = useState(null)
     const [users, setUsers] = useState([])
     const [filtredUsers, setFiltredUsers] = useState([])
-    const [drag, setDrag] = useState(false)
     const [select, setSelect] = useState(false)
-    const [files, setFiles] = useState([])
+    const [photosIdArr, setPhotosIdArr] = useState([])
 
     const inputNameRef = useRef('')
     const inputDescriptionRef = useRef('')
@@ -19,7 +19,6 @@ const CreateEvent = (props) => {
     const inputEndDateRef = useRef('')
     const inputTimeRef = useRef('')
     const inputPlaceRef = useRef('')
-    const inputFileRef = useRef(null);
 
     const refsArr = [inputNameRef, inputDescriptionRef, inputParticipantsRef, inputStartDateRef, inputEndDateRef, inputTimeRef, inputPlaceRef]
     const refsRequeried = [inputNameRef, inputDescriptionRef, inputStartDateRef, inputTimeRef, inputPlaceRef]
@@ -80,7 +79,39 @@ const CreateEvent = (props) => {
         };
       };
 
-    const handleCreateEvent = () => {
+    const uploadFiles = async() => {
+        let photosStore = null
+        let photosId = []
+        const formData = new FormData()
+        props.photos.map(photo => {
+            formData.append('files', photo)
+        })
+        return await axios
+            .post('https://planner.rdclr.ru/api/upload', formData, {
+                headers: {
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+            .then(response => { 
+                console.log(response.data)
+                photosStore = response.data
+                photosStore.map(photo => {
+                    photosId.push(photo.id)
+                })
+                return photosId
+            })
+            .catch(error => {
+                console.log(error.response)
+                props.changeForm('ALL', '')
+                props.clearParticipants()
+                props.switchEnterMode(false) 
+                props.switchEventModalMode('ERROR')
+                props.switchEnterMode(true) 
+            }); 
+    }
+
+    const handleCreateEvent = async() => {
         let participantsList = props.participants
         let orgExist = props.participants.filter((element) => element == user)
         if(orgExist.length == 0){
@@ -97,6 +128,9 @@ const CreateEvent = (props) => {
         let splitTimeEvent = inputTimeRef.current.value.split(':')
         let dateStartEvent = new Date(splitStartDateEvent[0], splitStartDateEvent[1] - 1, splitStartDateEvent[2], splitTimeEvent[0], splitTimeEvent[1], 0, 0)
         let dateEndEvent = new Date(splitEndDateEvent[0], splitEndDateEvent[1], splitEndDateEvent[2], 0, 0, 0, 0)
+        if(props.photos.length != 0){
+
+        let upload = await uploadFiles()
 
         let event = {
             title: inputNameRef.current.value,
@@ -105,9 +139,42 @@ const CreateEvent = (props) => {
             dateEnd: inputEndDateRef.current.value == '' ? null : dateEndEvent,
             location: inputPlaceRef.current.value,
             participants: participantsId,
+            photos: upload
         }
 
-        console.log(event)
+        axios
+            .post('https://planner.rdclr.ru/api/events', JSON.stringify(event,getCircularReplacer()), { headers: {
+                "Authorization": `Bearer ${props.token}`,
+                "Content-Type": "application/json"
+                }})
+            .then(response => { 
+                console.log(response.data)
+                props.createdEvent(response.data)
+                props.changeForm('ALL', '')
+                props.clearParticipants()
+                props.switchEnterMode(false) 
+                props.switchEventModalMode('CONGRATULATION')
+                props.switchEnterMode(true) 
+            })
+            .catch(error => {
+                console.log(error.response)
+                props.changeForm('ALL', '')
+                props.clearParticipants()
+                props.switchEnterMode(false) 
+                props.switchEventModalMode('ERROR')
+                props.switchEnterMode(true) 
+            });
+        }
+        else {
+        let event = {
+            title: inputNameRef.current.value,
+            description: inputDescriptionRef.current.value,
+            dateStart: dateStartEvent,
+            dateEnd: inputEndDateRef.current.value == '' ? null : dateEndEvent,
+            location: inputPlaceRef.current.value,
+            participants: participantsId,
+            photos: null
+        }
         
         axios
             .post('https://planner.rdclr.ru/api/events', JSON.stringify(event,getCircularReplacer()), { headers: {
@@ -117,16 +184,21 @@ const CreateEvent = (props) => {
             .then(response => { 
                 console.log(response.data)
                 props.createdEvent(response.data)
+                props.changeForm('ALL', '')
+                props.clearParticipants()
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('CONGRATULATION')
                 props.switchEnterMode(true) 
             })
             .catch(error => {
                 console.log(error.response)
+                props.changeForm('ALL', '')
+                props.clearParticipants()
                 props.switchEnterMode(false) 
                 props.switchEventModalMode('ERROR')
                 props.switchEnterMode(true) 
             });   
+        }
     }
 
     const handleParticipantSelect = () => {
@@ -158,52 +230,6 @@ const CreateEvent = (props) => {
         let newListUsers = [...filtredUsers, item]
         setFiltredUsers(newListUsers)
     }
-
-    const dragStartHandler = (e) => {
-        e.preventDefault()
-        setDrag(true)
-    }
-
-    const dragLeaveHandler = (e) => {
-        e.preventDefault()
-        setDrag(false)
-    }
-
-    const dropHandler = (e) => {
-        e.preventDefault()
-        let file = files
-        file.push(...e.dataTransfer.files)
-        console.log(file, files)
-        setDrag(false)
-        setFiles(file)
-    }
-
-    const handleFileChange = (e) => {
-        if (!e.target.files) {
-            return;
-        }
-        let file = files
-        file.push(e.target.files[0])
-        console.log(file, files)
-        props.changeForm('PHOTOS', file)
-        setFiles(file);
-    }
-
-    console.log(props)
-
-    const handleInputFile = () => {
-        inputFileRef.current?.click()
-    }
-
-    const makePreview = () => {
-        let fr = new FileReader();
-        return new Promise(resolve => {
-            files.map(file => {
-                fr.readAsDataURL(file);
-                fr.onloadend = () => resolve(fr.result)
-            })
-        });
-      }
 
     useEffect(() => {
         axios
@@ -244,11 +270,11 @@ const CreateEvent = (props) => {
                 <div className="info-event">
                     <div className="what-event">
                         <div className="name">
-                            <input id='name' ref={inputNameRef} required={true} className='modal-input event-input' onChange={() => handleChange('TITLE', inputNameRef.current.value)} type='text' value={props.title}/>
+                            <input id='name' ref={inputNameRef} required={true} className='modal-input event-input' onChange={() => handleChange('TITLE', inputNameRef.current.value)} type='text' value={props.title} maxLength="140"/>
                             <label htmlFor="name" className={inputNameRef.current.value != '' ? 'placeholder placeholder-top' : 'placeholder'}>Название*</label>
                         </div>
                         <div className="description">
-                            <input id='description' ref={inputDescriptionRef} required={true} className='modal-input event-input' onChange={() => handleChange('DESCRIPTION', inputDescriptionRef.current.value)} type='text' value={props.description}/>
+                            <input id='description' ref={inputDescriptionRef} required={true} className='modal-input event-input' onChange={() => handleChange('DESCRIPTION', inputDescriptionRef.current.value)} type='text' value={props.description} maxLength="1000"/>
                             <label htmlFor="description" className={inputDescriptionRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Описание*</label>
                         </div>
                         <div className="participants">
@@ -295,20 +321,6 @@ const CreateEvent = (props) => {
                             }
                             <label htmlFor="participants" className={inputParticipantsRef.current.value  ? 'placeholder placeholder-top' : 'placeholder'}>Участники</label>
                         </div>
-                        <div className="drop-img-area" onClick={handleInputFile}>
-                                <div className="drop-area" 
-                                    onDragStart={e => dragStartHandler(e)}
-                                    onDragLeave={e => dragLeaveHandler(e)}
-                                    onDragOver={e => dragStartHandler(e)}
-                                    onDrop={e => dropHandler(e)}
-                                >{drag ? 'Отпустите файлы, чтобы загрузить их' : 'Выберите фото или перетащите сюда'}</div>
-                                <input
-                                type="file"
-                                ref={inputFileRef}
-                                onChange={handleFileChange}
-                                style={{ display: 'none' }}
-                            />
-                        </div>
                     </div>
                     <div className="where-event">
                         <div className="info-date">
@@ -326,7 +338,7 @@ const CreateEvent = (props) => {
                             <label htmlFor="time" className={'placeholder placeholder-top'}>Время</label>
                         </div>
                         <div className="place-event">
-                            <input id='place-event' ref={inputPlaceRef} required={true} className='modal-input event-input' onChange={() => handleChange('PLACE', inputPlaceRef.current.value)} type='text' value={props.place}/>
+                            <input id='place-event' ref={inputPlaceRef} required={true} className='modal-input event-input' onChange={() => handleChange('PLACE', inputPlaceRef.current.value)} type='text' value={props.place} maxLength="140"/>
                             <label htmlFor="place-event" className={inputPlaceRef.current.value ? 'placeholder placeholder-top' : 'placeholder'}>Место проведения*</label>
                         </div>
                         <div className="event-organizer-info">
@@ -335,17 +347,10 @@ const CreateEvent = (props) => {
                                 <span className='organizer-name'>{user ? user.username : null}</span>
                                 <span className='organizer-status'>Организатор</span>
                             </div>
-                        </div>
-                        {
-                            props.photos ?
-                            <div className="photo-for-upload">
-                                
-                            </div>
-                            :
-                            null
-                        }
+                        </div>   
                     </div>
                 </div>        
+                <DropzoneComponent changeForm={props.changeForm}/>
                 <button id='create-btn' className={active ? 'submit' : 'submit disable'} onClick={handleCreateEvent}>
                     Создать
                 </button>

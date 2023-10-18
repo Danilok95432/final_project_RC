@@ -34,6 +34,7 @@ const AlertLeaveEvent = (props) => {
             }})
             .then(response => {
                 console.log(response.data)
+                props.updateParticipantMe('')
             })
             .catch(error => {
                 props.switchEnterMode(false) 

@@ -2,7 +2,8 @@ const CHANGE_FORM = 'CHANGE-FORM',
       ACTIVE_SELECT = 'ACTIVE-SELECT',
       CLEAR_PARTICIPANTS = 'CLEAR-PARTICIPANTS',
       DELETE_PARTCIPANT = 'DELETE-PARTICIPANT',
-      CREATED_EVENT = 'CREATED-EVENT'
+      CREATED_EVENT = 'CREATED-EVENT',
+      SET_PHOTOS_ID = 'SET-PHOTOS-ID'
 
 let initialState = {
     title: '',
@@ -16,6 +17,7 @@ let initialState = {
     place: '',
     participantsSelect: false,
     createdEvent: null,
+    photosId: []
 }
 
 
@@ -63,6 +65,7 @@ const createEventReducer = (state = initialState, action) =>{
                     state.title = action.data
                     state.description = action.data
                     state.participantsFilter = action.data
+                    state.photos = action.data
                     state.startDate = action.data
                     state.endDate = action.data
                     state.time = action.data
@@ -103,6 +106,14 @@ const createEventReducer = (state = initialState, action) =>{
                 createdEvent: action.event
             }
         }
+
+        case SET_PHOTOS_ID: {
+            
+            return{
+                ...state,
+                photosId: action.ids
+            }
+        }
     }
 
     return state
@@ -141,6 +152,13 @@ export let createdEventAC = (event) => {
     return{
         type: CREATED_EVENT,
         event: event
+    }
+}
+
+export let setPhotosIdAC = (ids) => {
+    return{
+        type: SET_PHOTOS_ID,
+        ids: ids
     }
 }
 

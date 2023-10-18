@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import avatar from '../../assets/avatar.png'
 import '../../assets/css/css-for-modal/CheckEvent.css'
+import moment from 'moment/moment'
 
 const CheckEvent = (props) => {
 
@@ -51,15 +52,15 @@ const CheckEvent = (props) => {
         }
     }, [])
 
-    const nextSlide = (diff) => {
-        let item = step + diff
+    const nextSlide = () => {
+        let item = step + 1
         let nextItemPhoto = currentItem + 1
         setCurrentItem(nextItemPhoto)
         setStep(item)
     }
 
-    const prevSlide = (diff) => {
-        let item = step - diff
+    const prevSlide = () => {
+        let item = step - 1
         let nextItemPhoto = currentItem - 1
         setCurrentItem(nextItemPhoto)
         setStep(item)
@@ -67,10 +68,9 @@ const CheckEvent = (props) => {
 
     const createPagination = () => {
         const dots = []
-        console.log(step)
-        for (let i = 0; i < (props.currentEvent.data.photos.length - 1) / 2; i++) {
+        for (let i = 0; i < (props.currentEvent.data.photos.length); i++) {
             dots.push(
-                step == (props.currentEvent.data.photos.length - 1 / 2) * i ?
+                step ==  i ?
                 <span className="pagination-vector-active" key={`dot-${i}`} number={i}></span>
                 :
                 <span className="pagination-vector" key={`dot-${i}`} number={i}></span>
@@ -86,6 +86,53 @@ const CheckEvent = (props) => {
         props.switchModalMode('EMAIL')
     }
 
+    const convertDay = (date) => {
+        let dateOutput
+        const days = [
+            'Воскресенье',
+            'Понедельник',
+            'Вторник',
+            'Среда',
+            'Четверг',
+            'Пятница',
+            'Суббота'
+        ];
+        let dateNew = new Date(date)
+        let day = dateNew.getDay()
+        return dateOutput = days[day]
+    }
+
+    const convertMonth = (date) => {
+        let dateOutput = ''
+
+        const MONTH = [
+            'Января',
+            'Февраля',
+            'Марта',
+            'Апреля',
+            'Мая',
+            'Июня',
+            'Июля',
+            'Августа',
+            'Сентября',
+            'Октября',
+            'Ноября',
+            'Декабря',
+        ] 
+        let dateNew = new Date(date)
+        let dayNumber = dateNew.getDate()
+        let month = dateNew.getMonth()
+        return dateOutput = dayNumber + " " + MONTH[month]
+    }
+
+    const convertTime = (date) => {
+        let dateOutput = ''
+        let time = date.split("T")
+        let timeDepth = time[1].split(":")
+        let hourNMinute = timeDepth[0] + ":" + timeDepth[1]
+        return dateOutput = hourNMinute
+    }
+
     const handleParticipation = () => {
         if(props.currentEvent.data.participants.filter((participant) => participant.email == props.user).length == 0)
         {
@@ -97,6 +144,7 @@ const CheckEvent = (props) => {
                         }
                     })
                 .then(response => {
+                    props.updateParticipantMe(response.data)
                     props.switchEnterMode(false) 
                     props.switchEventModalMode('CONGRATULATION-JOIN')
                     props.switchEnterMode(true) 
@@ -124,7 +172,11 @@ const CheckEvent = (props) => {
                         <h2 className='title-modal'>{props.currentEvent.data.title}</h2>
                         <div className="view-info-event">
                             <div className="info-where-event">
-                                <span id='dateEvent'>{props.currentEvent.data.dateStart}</span>
+                                <div id='dateEvent'>
+                                    <div className="day-of-week-event">{convertDay(props.currentEvent.data.dateStart)}</div>
+                                    <div className="date-event">{convertMonth(props.currentEvent.data.dateStart)}</div>
+                                    <div className="time-event-info">{convertTime(props.currentEvent.data.dateStart)}</div>
+                                </div>
                                 <span id='locationEvent'>{props.currentEvent.data.location}</span>
                             </div>
                             <div className="info-what-event">
@@ -163,8 +215,8 @@ const CheckEvent = (props) => {
                                 {
                                     props.currentEvent.data.photos ?
                                     <div className="btns-navigate">
-                                        <button className={step == 0 ? 'btn-switch prev disable-btn' : 'btn-switch prev'} onClick={() => prevSlide((props.currentEvent.data.photos.length / 2))}></button>
-                                        <button className={step > props.currentEvent.data.photos.length ? 'btn-switch next disable-btn' : 'btn-switch next'} onClick={() => nextSlide((props.currentEvent.data.photos.length / 2))}></button>
+                                        <button className={step == 0 ? 'btn-switch prev disable-btn' : 'btn-switch prev'} onClick={() => prevSlide()}></button>
+                                        <button className={step == props.currentEvent.data.photos.length - 1 ? 'btn-switch next disable-btn' : 'btn-switch next'} onClick={() => nextSlide()}></button>
                                     </div>
                                     :
                                     null

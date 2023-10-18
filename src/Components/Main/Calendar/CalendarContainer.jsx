@@ -11,6 +11,7 @@ let mapStateToProps = (state) =>{
         monthData: state.calendar.monthData,
         createdEvent: state.create.createdEvent,
         deletedEvent: state.events.deletedEvent,
+        update: state.events.update,
         user: state.users.user,
         token: state.auth.token,
     }

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import CreateEvent from "./CreateEvent";
-import { activeSelectAC, changeFormAC, clearParticipantsAC, createdEventAC, deleteParticipantAC } from "../../redux/createEventReducer";
+import { activeSelectAC, changeFormAC, clearParticipantsAC, createdEventAC, deleteParticipantAC, setPhotosIdAC } from "../../redux/createEventReducer";
 import { switchEnterModeAC } from "../../redux/appReducer";
 import { switchEventModalModeAC } from "../../redux/eventsReducer";
 
@@ -19,6 +19,8 @@ let mapStateToProps = (state) =>{
         user: state.users.user,
         token: state.auth.token,
         currentEvent: state.events.currentEvent,
+        createEvent: state.create.createdEvent,
+        photosIdArray: state.create.photosId
     }
 }
 
@@ -44,6 +46,9 @@ let mapDispatchToProps = (dispatch) =>{
         },
         createdEvent: (event) => {
             dispatch( createdEventAC(event) );
+        },
+        setPhotosId: (ids) => {
+            dispatch( setPhotosIdAC(ids) );
         }
     }
 }

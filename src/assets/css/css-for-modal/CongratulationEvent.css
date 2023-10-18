@@ -14,7 +14,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 102px;
+    gap: 76px;
     padding: 8px 0px 0px 80px;
     position: relative;
     z-index: 1000;
@@ -35,6 +35,7 @@
     font-size: 18px;
     font-weight: 400;
     color: var(--btn-hover);
+    margin-bottom: 74px;
 }
 
 #congrat-btn{
@@ -46,4 +47,49 @@
     bottom: 0;
     right: 0;
     z-index: 2;
+}
+
+.when{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.day-of-week-event-desc{
+    border-right: 1px solid var(--cell-disable);
+    text-align: left;
+    font-size: 18px;
+    font-weight: 400;
+    padding-right: 16px;
+}
+
+.date-event-desc{
+    width: 30%;
+    border-right: 1px solid var(--cell-disable);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 0px 16px;
+}
+
+.time-event-info-desc{
+    width: 20%;
+    text-align: right;
+    font-size: 18px;
+    font-weight: 400;
+    padding-left: 16px;
+}
+
+.description-event{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.description-event-congrat{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

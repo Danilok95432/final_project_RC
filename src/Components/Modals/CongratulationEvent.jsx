@@ -8,7 +8,54 @@ const CongratulationEvent = (props) => {
         props.switchEnterMode(false) 
     }
 
-    console.log(props.createdEvent)
+    const convertDay = (date) => {
+        let dateOutput = ''
+        const days = [
+            'Воскресенье',
+            'Понедельник',
+            'Вторник',
+            'Среда',
+            'Четверг',
+            'Пятница',
+            'Суббота'
+        ];
+        let dateNew = new Date(date)
+        let day = dateNew.getDay()
+        return dateOutput = days[day]
+    }
+
+    const convertMonth = (date) => {
+        let dateOutput = ''
+
+        const MONTH = [
+            'Января',
+            'Февраля',
+            'Марта',
+            'Апреля',
+            'Мая',
+            'Июня',
+            'Июля',
+            'Августа',
+            'Сентября',
+            'Октября',
+            'Ноября',
+            'Декабря',
+        ] 
+        let dateNew = new Date(date)
+        let dayNumber = dateNew.getDate()
+        let month = dateNew.getMonth()
+        return dateOutput = dayNumber + " " + MONTH[month]
+    }
+
+    const convertTime = (date) => {
+        let dateOutput = ''
+        let time = date.split("T")
+        let timeDepth = time[1].split(":")
+        let hourNMinute = timeDepth[0] + ":" + timeDepth[1]
+        return dateOutput = hourNMinute
+    }
+
+    console.log(props)
 
     return(
         <div className="modal-congrat">
@@ -19,7 +66,14 @@ const CongratulationEvent = (props) => {
                     <h4 id='congrat-subtitle' className='subtitle-modal'>Вы добавили новое событие: </h4>
                     <h4 className='event-title-congrat'>{props.createdEvent ? props.createdEvent.title : null}</h4>
                     <div className="description-event">
-                        
+                        <div className="when">
+                            <div className="day-of-week-event-desc">{convertDay(props.createdEvent.dateStart)}</div>
+                            <div className="date-event-desc">{convertMonth(props.createdEvent.dateStart)}</div>
+                            <div className="time-event-info-desc">{convertTime(props.createdEvent.dateStart)}</div>
+                        </div>
+                        <div className="where">
+                            <p>{props.createdEvent.location}</p>
+                        </div>
                     </div>
                 </div>
                 <button id='congrat-btn' className='submit' onClick={switchMode}>Отлично</button>

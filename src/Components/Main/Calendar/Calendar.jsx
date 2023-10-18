@@ -51,7 +51,7 @@ const Calendar = (props) => {
             })
             props.getMonthData()
         setData(props.monthData)
-    }, [props.currentMonth, props.createdEvent, props.deletedEvent])
+    }, [props.currentMonth, props.createdEvent, props.deletedEvent, props.update])
 
     const isCurrentMonthDate = (date) => {
         if(date.getMonth() == props.currentMonth)

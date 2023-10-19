@@ -12,7 +12,6 @@ const CreateEvent = (props) => {
     const [users, setUsers] = useState([])
     const [filtredUsers, setFiltredUsers] = useState([])
     const [select, setSelect] = useState(false)
-    const [photosIdArr, setPhotosIdArr] = useState([])
     const [selectDate, setSelectDate] = useState(false)
     const [selectDateEnd, setSelectDateEnd] = useState(false)
 
@@ -180,7 +179,7 @@ const CreateEvent = (props) => {
             title: inputNameRef.current.value,
             description: inputDescriptionRef.current.value,
             dateStart: dateStartEvent,
-            dateEnd: inputEndDateRef.current.value == '' ? null : dateEndEvent,
+            dateEnd: inputEndDateRef.current.value == '' ? '' : dateEndEvent,
             location: inputPlaceRef.current.value,
             participants: participantsId,
             photos: null

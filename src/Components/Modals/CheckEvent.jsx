@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import avatar from '../../assets/avatar.png'
 import '../../assets/css/css-for-modal/CheckEvent.css'
-import moment from 'moment/moment'
 
 const CheckEvent = (props) => {
 

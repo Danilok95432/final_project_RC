@@ -123,19 +123,19 @@ const Calendar = (props) => {
                                     return(
                                         <div key={index} className={isCurrentMonthDate(day.date) ? 'day' : 'day non-current'}>
                                             <span className='day-number'>{day.date.getDate()}</span>
-                                            {
-                                                hasEvents(day.date) && eventsStore != [] ?
-                                                    eventsStore.map(event => {
-                                                        return <span key={event.id} id={event.id} className={
-                                                            day.date < currentDate ? 
-                                                            'event-calendar passed-event-calendar' 
-                                                            : 
-                                                            isParticipant(event.participants) == false ? 'event-calendar' : 'event-calendar me-participant'
-                                                        } onClick={handlerClickEvents}>{event.title}</span>
-                                                    }) 
-                                                :
-                                                null
-                                            }
+                                                {
+                                                    hasEvents(day.date) && eventsStore != [] ?
+                                                        eventsStore.map(event => {
+                                                            return <span key={event.id} id={event.id} className={
+                                                                day.date < currentDate ? 
+                                                                'event-calendar passed-event-calendar' 
+                                                                : 
+                                                                isParticipant(event.participants) == false ? 'event-calendar' : 'event-calendar me-participant'
+                                                            } onClick={handlerClickEvents}>{event.title}</span>
+                                                        }) 
+                                                    :
+                                                    null
+                                                }
                                         </div>
                                     )
                                 })

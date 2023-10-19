@@ -5,9 +5,11 @@ import authReducer from './authReducer'
 import usersReducer from "./usersReducer";
 import eventsReducer from "./eventsReducer";
 import createEventReducer from "./createEventReducer";
+import miniCalendarReduser from './miniCalendarReducer';
 
 let reducers = combineReducers({
     calendar: calendarReducer,
+    minicalendar: miniCalendarReduser,
     app: appReducer,
     auth: authReducer,
     users: usersReducer,

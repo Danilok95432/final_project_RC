@@ -1,6 +1,6 @@
-const PREV_MONTH = 'PREV-MONTH',
-      NEXT_MONTH = 'NEXT-MONTH',
-      GET_MONTH_DATA = 'GET-MONTH-DATA'
+const PREV_MONTH_MINI = 'PREV-MONTH-MINI',
+      NEXT_MONTH_MINI = 'NEXT-MONTH-MINI',
+      GET_MONTH_DATA_MINI = 'GET-MONTH-DATA-MINI'
 
 const DAYS_IN_WEEK = 7,
       DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -27,7 +27,7 @@ const getDaysInMonth = (year, month) => {
     else return DAYS_IN_MONTH[month]
 }
 
-const getMonthData = (year, month) => {
+const getMonthDataMini = (year, month) => {
     const result = []
     const date = new Date(year, month)
     const daysInMorth = getDaysInMonth(year, month)
@@ -67,18 +67,18 @@ const getMonthData = (year, month) => {
 }
 
 let initialState = {
-    currentMonth: monthName,
-    currentYear: year,
-    calendarYear: year,
-    monthData: getMonthData(year, monthName),
+    currentMonthMini: monthName,
+    currentYearMini: year,
+    calendarYearMini: year,
+    monthDataMini: getMonthDataMini(year, monthName),
 }
 
 
-const calendarReducer = (state = initialState, action) =>{
+const miniCalendarReducer = (state = initialState, action) =>{
 
     let changeYear = 0
     switch(action.type){
-        case NEXT_MONTH: {
+        case NEXT_MONTH_MINI: {
             if(action.index == 11){
                 action.index = 0
                 changeYear = 1
@@ -86,11 +86,11 @@ const calendarReducer = (state = initialState, action) =>{
             else action.index++
             return{
                 ...state,
-                currentMonth: action.index,
-                currentYear: state.currentYear + changeYear
+                currentMonthMini: action.index,
+                currentYearMini: state.currentYearMini + changeYear
             }
         }
-        case PREV_MONTH: {
+        case PREV_MONTH_MINI: {
             if(action.index == 0){
                 action.index = 11
                 changeYear = 1
@@ -98,15 +98,15 @@ const calendarReducer = (state = initialState, action) =>{
             else action.index--
             return{
                 ...state,
-                currentMonth: action.index,
-                currentYear: state.currentYear - changeYear
+                currentMonthMini: action.index,
+                currentYearMini: state.currentYearMini - changeYear
             }
         }
-        case GET_MONTH_DATA: {
-            let result = getMonthData(state.currentYear, state.currentMonth)
+        case GET_MONTH_DATA_MINI: {
+            let result = getMonthDataMini(state.currentYearMini, state.currentMonthMini)
             return{
                 ...state,
-                monthData: result
+                monthDataMini: result
             }
         }
         default:
@@ -116,26 +116,26 @@ const calendarReducer = (state = initialState, action) =>{
     return state
 }
 
-export let nextMonthAC = (index) =>{
+export let nextMonthMiniAC = (index) =>{
     return{
-        type: NEXT_MONTH,
+        type: NEXT_MONTH_MINI,
         index: index
     }
 }
 
-export let prevMonthAC = (index) =>{
+export let prevMonthMiniAC = (index) =>{
     return{
-        type: PREV_MONTH,
+        type: PREV_MONTH_MINI,
         index: index,
     }
 }
 
-export let getMonthDataAC = () =>{
+export let getMonthDataMiniAC = () =>{
     return{
-        type: GET_MONTH_DATA,
+        type: GET_MONTH_DATA_MINI,
     }
 }
 
 
 
-export default calendarReducer
+export default miniCalendarReducer

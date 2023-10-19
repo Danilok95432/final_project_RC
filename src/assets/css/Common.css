@@ -92,7 +92,6 @@
 }
 
 .submit{
-   width: 60%;
    background: var(--btn-passive);
    padding: 21px 32px 21px 32px;
    border-radius: 12px;

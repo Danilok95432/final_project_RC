@@ -1,0 +1,80 @@
+.mini-calendar{
+    width: 100%;
+    margin: auto;
+    padding: 16px 16px 32px 16px;
+}
+
+.days-of-week-mini{
+    display: grid;
+    text-align: right;
+    grid-template-columns: repeat(7, calc(100%/7));
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16.8px;
+    font-family: TT;
+    color: var(--cell-disable);
+}
+
+.number-of-days-mini{
+    display: grid;
+    text-align: right;
+    grid-template-columns: 100%;
+}
+
+.week-mini{
+    display: grid;
+    text-align: right;
+    grid-template-columns: repeat(7, calc(100%/7));
+}
+
+.vector-prev{
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg width='9' height='17' viewBox='0 0 9 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 15.5L1.70711 9.20711C1.31658 8.81658 1.31658 8.18342 1.70711 7.79289L8 1.5' stroke='%230D0C0C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E%0A");
+}
+
+.vector-next{
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg width='9' height='17' viewBox='0 0 9 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L7.29289 7.79289C7.68342 8.18342 7.68342 8.81658 7.29289 9.20711L1 15.5' stroke='%230D0C0C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E%0A");
+}
+
+.select-month{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 32px 16px 0px 16px;
+}
+
+.day-mini{
+    transition: all 0.3s ease-in-out;
+    text-align: right;
+}
+
+.day-number-mini{
+    padding: 2px 2px;
+    text-align: center;
+}
+
+.day-mini:hover{
+    background-color: var(--btn-hover);
+    color: var(--body);
+    cursor: pointer;
+}
+
+.active-date{
+    background-color: var(--btn-hover);
+    color: var(--body);
+}
+
+.sumbit-date-btn{
+    margin: 16px 16px;
+}

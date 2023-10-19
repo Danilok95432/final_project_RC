@@ -3,6 +3,8 @@ import avatar from '../../assets/avatar.png'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import DropzoneComponent from '../Main/Common/DropzoneComponent'
+import MiniCalendarContainer from '../Main/Calendar/MiniCalendarContainer'
+import moment from 'moment'
 
 const CreateEvent = (props) => {
     const [active, setActive] = useState(false)
@@ -11,6 +13,8 @@ const CreateEvent = (props) => {
     const [filtredUsers, setFiltredUsers] = useState([])
     const [select, setSelect] = useState(false)
     const [photosIdArr, setPhotosIdArr] = useState([])
+    const [selectDate, setSelectDate] = useState(false)
+    const [selectDateEnd, setSelectDateEnd] = useState(false)
 
     const inputNameRef = useRef('')
     const inputDescriptionRef = useRef('')
@@ -122,12 +126,18 @@ const CreateEvent = (props) => {
             participantsId.push(item.id)
         })
         participantsId.reverse()
-
-        let splitStartDateEvent = inputStartDateRef.current.value.split('-')
-        let splitEndDateEvent = inputEndDateRef.current.value.split('-')
+        let startDateNonFormat = moment(props.startDate).format("YYYY-MM-DD")
+        let endDateNonFormat
+        let splitEndDateEvent
+        let dateEndEvent
+        if(props.endDate){
+            endDateNonFormat = moment(props.endDate).format("YYYY-MM-DD")
+            splitEndDateEvent = endDateNonFormat.split('-')
+            dateEndEvent = new Date(splitEndDateEvent[0], splitEndDateEvent[1], splitEndDateEvent[2], 0, 0, 0, 0)
+        }
+        let splitStartDateEvent = startDateNonFormat.split('-')
         let splitTimeEvent = inputTimeRef.current.value.split(':')
         let dateStartEvent = new Date(splitStartDateEvent[0], splitStartDateEvent[1] - 1, splitStartDateEvent[2], splitTimeEvent[0], splitTimeEvent[1], 0, 0)
-        let dateEndEvent = new Date(splitEndDateEvent[0], splitEndDateEvent[1], splitEndDateEvent[2], 0, 0, 0, 0)
         if(props.photos.length != 0){
 
         let upload = await uploadFiles()
@@ -136,7 +146,7 @@ const CreateEvent = (props) => {
             title: inputNameRef.current.value,
             description: inputDescriptionRef.current.value,
             dateStart: dateStartEvent,
-            dateEnd: inputEndDateRef.current.value == '' ? null : dateEndEvent,
+            dateEnd: props.endDate == '' ? null : dateEndEvent,
             location: inputPlaceRef.current.value,
             participants: participantsId,
             photos: upload
@@ -325,12 +335,34 @@ const CreateEvent = (props) => {
                     <div className="where-event">
                         <div className="info-date">
                             <div className="start-date">
-                                <input id='start-date' ref={inputStartDateRef} required={true} className='modal-input event-input' onChange={() => handleChange('STARTDATE', inputStartDateRef.current.value)} type='date'/>
+                                <div className="date-input" onClick={() => {setSelectDate(!selectDate); setSelectDateEnd(false)}} onChange={() => {setSelectDate(false)}}>
+                                    <input id='start-date' ref={inputStartDateRef} required={true} className='modal-input event-input' type='text' value={moment(props.startDate).format("YYYY-MM-DD") == 'Invalid date' ? '' : moment(props.startDate).format("YYYY-MM-DD")}/>
+                                    <div className="vector-calendar"></div>
+                                </div>
                                 <label htmlFor="start-date" className={'placeholder placeholder-top'}>Начало*</label>
+                                {
+                                    selectDate ?
+                                    <div className="window-select-date">
+                                        <MiniCalendarContainer />
+                                    </div>
+                                    :
+                                    null
+                                }
                             </div>
                             <div className="end-date">
-                                <input id='end-date' ref={inputEndDateRef} required={false} className='modal-input event-input' onChange={() => handleChange('ENDDATE', inputEndDateRef.current.value)} type='date'/>
+                                <div className="date-input" onClick={() => {setSelectDateEnd(props.startDate != '' ? !selectDateEnd : false); setSelectDate(false);}} onChange={() => {setSelectDateEnd(false)}}>
+                                    <input id='end-date' ref={inputEndDateRef} required={false} className='modal-input event-input' type='text' value={moment(props.endDate).format("YYYY-MM-DD") == 'Invalid date' ? '' : moment(props.endDate).format("YYYY-MM-DD")}/>
+                                    <div className="vector-calendar"></div>
+                                </div>
                                 <label htmlFor="end-date" className={'placeholder placeholder-top'}>Конец</label>
+                                {
+                                    selectDateEnd ?
+                                    <div className="window-select-date-end">
+                                        <MiniCalendarContainer />
+                                    </div>
+                                    :
+                                    null
+                                }
                             </div>
                         </div>
                         <div className="time">

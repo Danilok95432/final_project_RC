@@ -225,11 +225,11 @@ const CheckEvent = (props) => {
                             {
                                 props.currentEvent.data.photos ?
                                 <>
-                                <div className="gallery" style={{ transform: `translateX(-${props.currentEvent.data.photos[currentItem].formats.small ? currentItem * props.currentEvent.data.photos[currentItem].formats.small.width : currentItem * props.currentEvent.data.photos[currentItem].width}px)` }}>
+                                <div className="gallery" style={{ transform: `translateX(-${props.currentEvent.data.photos[currentItem].formats.thumbnail ? currentItem * props.currentEvent.data.photos[currentItem].formats.thumbnail.width : currentItem * props.currentEvent.data.photos[currentItem].width}px)` }}>
                                     {
                                         props.currentEvent.data.photos.map(photo => {
                                             return(
-                                                <img key={photo.id} src={photo.formats.small ? `https://planner.rdclr.ru${photo.formats.small.url}` : `https://planner.rdclr.ru${photo.url}`} alt='' width={photo.formats.small ? photo.formats.small.width : photo.width} height={photo.formats.small ? photo.formats.small.height : photo.height} />
+                                                <img key={photo.id} src={photo.formats.thumbnail ? `https://planner.rdclr.ru${photo.formats.thumbnail.url}` : `https://planner.rdclr.ru${photo.url}`} alt='' width={photo.formats.thumbnail ? photo.formats.thumbnail.width : photo.width} height={photo.formats.thumbnail ? photo.formats.thumbnail.height : photo.height} />
                                             )
                                         })
                                     }

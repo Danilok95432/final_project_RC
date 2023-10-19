@@ -13,18 +13,18 @@ const Calendar = (props) => {
 
     let startDateFilter
     let endDateFilter
-    if(props.currentMonth - 1 < 10 && props.currentMonth > 0)
+    if(props.currentMonth < 10 && props.currentMonth > 0)
     {
-        startDateFilter = props.currentYear + '-' + '0' + (props.currentMonth - 1) + '-' + '23' + 'T' + '00:00:00.000Z'
+        startDateFilter = props.currentYear + '-' + '0' + (props.currentMonth) + '-' + '23' + 'T' + '00:00:00.000Z'
     }
-    else if(props.currentMonth - 1 < 0) startDateFilter = props.currentYear - 1 + '-' + 11 + '-' + '23' + 'T' + '00:00:00.000Z'
-    else startDateFilter = props.currentYear + '-' + (props.currentMonth - 1) + '-' + '23' + 'T' + '00:00:00.000Z'
-    if(props.currentMonth + 1 > 11)
+    else if(props.currentMonth == 0) startDateFilter = props.currentYear - 1 + '-' + 12 + '-' + '23' + 'T' + '00:00:00.000Z'
+    else startDateFilter = props.currentYear + '-' + (props.currentMonth) + '-' + '23' + 'T' + '00:00:00.000Z'
+    if(props.currentMonth + 2 > 12)
     {
-        endDateFilter = props.currentYear + 1 + '-' + '0' + 0 + '-' + '07' + 'T' + '00:00:00.000Z'
+        endDateFilter = props.currentYear + 1 + '-' + '0' + (props.currentMonth + 2 - 12) + '-' + '07' + 'T' + '00:00:00.000Z'
     }
-    else if(props.currentMonth + 1 < 10) endDateFilter = props.currentYear + '-' + '0' + (props.currentMonth + 1) + '-' + '07' + 'T' + '00:00:00.000Z'
-    else endDateFilter = props.currentYear + '-' + (props.currentMonth + 1) + '-' + '07' + 'T' + '00:00:00.000Z'
+    else if(props.currentMonth + 2 < 10) endDateFilter = props.currentYear + '-' + '0' + (props.currentMonth + 2) + '-' + '07' + 'T' + '00:00:00.000Z'
+    else endDateFilter = props.currentYear + '-' + (props.currentMonth + 2) + '-' + '07' + 'T' + '00:00:00.000Z'
 
     const NAME_OF_DAYS = [
         'Пн',
@@ -38,7 +38,7 @@ const Calendar = (props) => {
 
     useEffect(() => {
         axios
-            .get(`https://planner.rdclr.ru/api/events?populate=*&filters[dateStart][$gte]=2022-10-14T14:00:00.000Z&filters[dateStart][$lte]=2024-10-14T14:00:00.000Z`)
+            .get(`https://planner.rdclr.ru/api/events?populate=*&filters[dateStart][$gte]=${startDateFilter}&filters[dateStart][$lte]=${endDateFilter}`)
             .then((response) => {
                 console.log(response.data)
                 setEventsData(response.data)

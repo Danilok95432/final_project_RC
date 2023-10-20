@@ -62,7 +62,7 @@ const MiniCalendar = (props) => {
         if(acitveDate >= dateCurrent)
             if(props.startDate == '')
                 props.changeForm('STARTDATE', acitveDate)
-            else props.changeForm('ENDDATE', acitveDate)
+            else if(acitveDate > props.startDate) props.changeForm('ENDDATE', acitveDate)
     }
 
     return(
